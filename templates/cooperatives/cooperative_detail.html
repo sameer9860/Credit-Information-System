@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ cooperative.name }} - Credit System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {% if request.user.is_superadmin %}
+                <li class="breadcrumb-item"><a href="{% url 'cooperatives:list' %}">Cooperatives</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">{{ cooperative.name }}</li>
+            </ol>
+        </nav>
+
+        <div class="card shadow-sm mt-3">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">{{ cooperative.name }}</h3>
+                {% if request.user.is_superadmin %}
+                <div>
+                    <a href="{% url 'cooperatives:edit' cooperative.pk %}" class="btn btn-outline-primary">Edit info</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th class="text-muted" style="width: 150px;">Code:</th>
+                                <td><code>{{ cooperative.code }}</code></td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Status:</th>
+                                <td>
+                                    <span
+                                        class="badge {% if cooperative.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
+                                        {{ cooperative.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Created:</th>
+                                <td>{{ cooperative.created_at|date:"F j, Y" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th class="text-muted" style="width: 150px;">Contact:</th>
+                                <td>{{ cooperative.contact }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Address:</th>
+                                <td>{{ cooperative.address|linebreaks }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <h1 class="display-4">{{ cooperative.members.count|default:"0" }}</h1>
+                        <p class="text-muted">Total Members</p>
+                        <a href="#" class="btn btn-sm btn-link">View Members</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <h1 class="display-4">{{ cooperative.loans.count|default:"0" }}</h1>
+                        <p class="text-muted">Active Loans</p>
+                        <a href="#" class="btn btn-sm btn-link">View Loans</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
