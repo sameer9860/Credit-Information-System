@@ -160,6 +160,9 @@ class CooperativeAccessMixin(LoginRequiredMixin):
         
         # Admin and Staff can only see their cooperative's data
         if self.request.user.cooperative:
+            from cooperatives.models import Cooperative
+            if queryset.model == Cooperative:
+                return queryset.filter(pk=self.request.user.cooperative.pk)
             return queryset.filter(cooperative=self.request.user.cooperative)
         
         return queryset.none()
