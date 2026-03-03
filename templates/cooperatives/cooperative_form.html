@@ -1,78 +1,79 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}{% if object %}Edit{% else %}Create{% endif %} Cooperative - Credit System{% endblock %}
+{% block title %}
+    {% if object %}Edit{% else %}Create{% endif %} Cooperative - Credit System
+{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
+
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'cooperatives:list' %}">Cooperatives</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{% if object %}Edit {{ object.name }}{% else
-                    %}Add New{% endif %}</li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'cooperatives:list' %}">Cooperatives</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    {% if object %}Edit {{ object.name }}{% else %}Add New{% endif %}
+                </li>
             </ol>
         </nav>
 
         <div class="card shadow-sm mt-3">
             <div class="card-header bg-white">
-                <h3 class="mb-0">{% if object %}Edit{% else %}Add{% endif %} Cooperative</h3>
+                <h3 class="mb-0">
+                    {% if object %}Edit{% else %}Add{% endif %} Cooperative
+                </h3>
             </div>
+
             <div class="card-body">
                 <form method="post" novalidate>
                     {% csrf_token %}
 
                     <div class="mb-3">
                         <label for="id_name" class="form-label">Cooperative Name</label>
-                        <input type="text" name="name" maxlength="255" class="form-control" required id="id_name"
-                            value="{{ form.name.value|default_if_none:'' }}">
-                        {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors }}</div>{% endif %}
+                        {{ form.name|as_crispy_field }}
                     </div>
 
                     <div class="mb-3">
                         <label for="id_code" class="form-label">Code (Unique)</label>
-                        <input type="text" name="code" maxlength="50" class="form-control" required id="id_code"
-                            value="{{ form.code.value|default_if_none:'' }}">
-                        {% if form.code.errors %}<div class="text-danger small">{{ form.code.errors }}</div>{% endif %}
-                        <div class="form-text">Short unique code identifying the cooperative.</div>
+                        {{ form.code|as_crispy_field }}
+                        <div class="form-text">
+                            Short unique code identifying the cooperative.
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="id_address" class="form-label">Address</label>
-                        <textarea name="address" cols="40" rows="3" class="form-control" required
-                            id="id_address">{{ form.address.value|default_if_none:'' }}</textarea>
-                        {% if form.address.errors %}<div class="text-danger small">{{ form.address.errors }}</div>{%
-                        endif %}
+                        {{ form.address|as_crispy_field }}
                     </div>
 
                     <div class="mb-3">
                         <label for="id_contact" class="form-label">Contact Details</label>
-                        <input type="text" name="contact" maxlength="255" class="form-control" required id="id_contact"
-                            value="{{ form.contact.value|default_if_none:'' }}">
-                        {% if form.contact.errors %}<div class="text-danger small">{{ form.contact.errors }}</div>{%
-                        endif %}
-                        <div class="form-text">Phone number or email address.</div>
+                        {{ form.contact|as_crispy_field }}
+                        <div class="form-text">
+                            Phone number or email address.
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="id_status" class="form-label">Status</label>
-                        <select name="status" class="form-select" id="id_status">
-                            {% for value, text in form.status.field.choices %}
-                            <option value="{{ value }}" {% if form.status.value==value %}selected{% endif %}>{{ text }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                        {% if form.status.errors %}<div class="text-danger small">{{ form.status.errors }}</div>{% endif
-                        %}
+                        {{ form.status|as_crispy_field }}
                     </div>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <a href="{% url 'cooperatives:list' %}" class="btn btn-light me-md-2">Cancel</a>
-                        <button type="submit" class="btn btn-primary px-4">Save Cooperative</button>
+                        <a href="{% url 'cooperatives:list' %}" class="btn btn-light me-md-2">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            Save Cooperative
+                        </button>
                     </div>
+
                 </form>
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}
