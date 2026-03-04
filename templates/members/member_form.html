@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+{% if object %}Edit Member{% else %}Add Member{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">{% if object %}Update Member: {{ object.full_name }}{% else %}Add New Member{% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="mt-4 d-flex justify-content-between">
+                        <a href="{% url 'members:member_list' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-success">
+                            {% if object %}Save Changes{% else %}Add Member{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
