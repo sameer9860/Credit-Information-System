@@ -20,6 +20,8 @@
                 {% if request.user.is_superadmin %}
                 <div>
                     <a href="{% url 'cooperatives:edit' cooperative.pk %}" class="btn btn-outline-primary">Edit info</a>
+                    <a href="{% url 'cooperatives:delete' cooperative.pk %}" class="btn btn-outline-danger ms-2">Delete
+                        Cooperative</a>
                 </div>
                 {% endif %}
             </div>
