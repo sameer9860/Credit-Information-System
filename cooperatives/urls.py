@@ -8,5 +8,6 @@ urlpatterns = [
     path('add/', views.CooperativeCreateView.as_view(), name='create'),
     path('<int:pk>/', views.CooperativeDetailView.as_view(), name='detail'),
     path('<int:pk>/edit/', views.CooperativeUpdateView.as_view(), name='edit'),
+    path('<int:pk>/delete/', views.CooperativeDeleteView.as_view(), name='delete'),
     path('<int:pk>/toggle-status/', views.toggle_cooperative_status, name='toggle_status'),
 ]
