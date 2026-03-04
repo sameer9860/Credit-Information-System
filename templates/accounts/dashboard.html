@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Credit System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Dashboard</h2>
+        <p class="text-muted">Welcome back, {{ user.full_name|default:user.username }}!</p>
+    </div>
+</div>
+
+{% if user.is_superadmin %}
+<!-- Super Admin Dashboard -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white shadow">
+            <div class="card-body">
+                <h5 class="card-title">Total Cooperatives</h5>
+                <h2 class="display-4">{{ total_cooperatives }}</h2>
+                <p class="mb-0">{{ active_cooperatives }} Active</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white shadow">
+            <div class="card-body">
+                <h5 class="card-title">Total Members</h5>
+                <h2 class="display-4">{{ total_members }}</h2>
+                <p class="mb-0">Across all coops</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white shadow">
+            <div class="card-body">
+                <h5 class="card-title">Blacklisted</h5>
+                <h2 class="display-4">{{ blacklisted_members }}</h2>
+                <p class="mb-0">System-wide</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white shadow">
+            <div class="card-body">
+                <h5 class="card-title">Django Admin</h5>
+                <div class="mt-3">
+                    <a href="/admin/" class="btn btn-light btn-sm w-100">Go to DB Admin</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Cooperatives</h5>
+                <a href="{% url 'cooperatives:list' %}" class="btn btn-sm btn-link">View All</a>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for coop in recent_cooperatives %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ coop.name }}
+                    <span class="badge bg-secondary">{{ coop.code }}</span>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-center">No cooperatives yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Members</h5>
+                <a href="{% url 'members:member_list' %}" class="btn btn-sm btn-link">View All</a>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for member in recent_members %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ member.full_name }}
+                    <small class="text-muted">{{ member.cooperative.name }}</small>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-center">No members yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- Cooperative Admin/Staff Dashboard -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white shadow">
+            <div class="card-body">
+                <h5 class="card-title">Cooperative Members</h5>
+                <h2 class="display-4">{{ total_members }}</h2>
+                <p class="mb-0">Active and Blacklisted</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-danger text-white shadow">
+            <div class="card-body">
+                <h5 class="card-title">Blacklisted</h5>
+                <h2 class="display-4">{{ blacklisted_members }}</h2>
+                <p class="mb-0">In your cooperative</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white shadow">
+            <div class="card-body">
+                <h5 class="card-title">My Cooperative</h5>
+                <p class="mb-1"><strong>{{ my_cooperative.name }}</strong></p>
+                <p class="mb-0 small">Code: {{ my_cooperative.code }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recently Added Members</h5>
+                <a href="{% url 'members:member_list' %}" class="btn btn-sm btn-link">Manage All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>Date Added</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in recent_members %}
+                        <tr>
+                            <td>{{ member.full_name }}</td>
+                            <td><code>{{ member.unique_system_id }}</code></td>
+                            <td>{{ member.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center py-3">No members added yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
