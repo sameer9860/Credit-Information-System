@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Member Details - {{ member.full_name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Member Profile</h4>
+                <span class="badge {% if member.blacklist_status %}bg-danger{% else %}bg-success{% endif %}">
+                    {% if member.blacklist_status %}Blacklisted{% else %}Active{% endif %}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">System ID:</div>
+                    <div class="col-sm-8">{{ member.unique_system_id }}</div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Full Name:</div>
+                    <div class="col-sm-8">{{ member.full_name }}</div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Citizenship Number:</div>
+                    <div class="col-sm-8">{{ member.citizenship_number }}</div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Cooperative:</div>
+                    <div class="col-sm-8">{{ member.cooperative.name }} ({{ member.cooperative.code }})</div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Phone:</div>
+                    <div class="col-sm-8">{{ member.phone }}</div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Address:</div>
+                    <div class="col-sm-8">{{ member.address|linebreaks }}</div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Joined On:</div>
+                    <div class="col-sm-8">{{ member.created_at|date:"M d, Y" }}</div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a href="{% url 'members:member_list' %}" class="btn btn-secondary">Back to List</a>
+                    <div>
+                        <a href="{% url 'members:member_edit' member.pk %}" class="btn btn-primary">Edit Profile</a>
+                        {% if user.is_superadmin or user.is_admin %}
+                        <a href="{% url 'members:member_delete' member.pk %}" class="btn btn-danger">Delete</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
