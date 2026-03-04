@@ -9,6 +9,7 @@ class MemberForm(forms.ModelForm):
         fields = [
             'full_name', 
             'citizenship_number', 
+            'cooperative',
             'address', 
             'phone', 
             'blacklist_status'
@@ -25,7 +26,16 @@ class MemberForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        # Only Super Admin can change blacklist status
-        if user and not user.is_superadmin():
-            self.fields['blacklist_status'].disabled = True
-            self.fields['blacklist_status'].help_text = "Only Super Admins can modify blacklist status."
+        # Only Super Admin can change blacklist status and assign cooperative
+        if user:
+            if user.is_superadmin():
+                # Super Admin can see and edit everything
+                pass 
+            else:
+                # Cooperative Admin/Staff cannot change cooperative
+                if 'cooperative' in self.fields:
+                    del self.fields['cooperative']
+                
+                # Only Super Admin can change blacklist status
+                self.fields['blacklist_status'].disabled = True
+                self.fields['blacklist_status'].help_text = "Only Super Admins can modify blacklist status."
