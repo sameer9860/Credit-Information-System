@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -7,12 +7,13 @@ from .models import Cooperative
 from accounts.permissions import (
     SuperAdminRequiredMixin, 
     CooperativeAccessMixin,
+    StaffOrAdminMixin,
     superadmin_required
 )
 
 
-class CooperativeListView(SuperAdminRequiredMixin, ListView):
-    """View for Super Admin to list all cooperatives."""
+class CooperativeListView(StaffOrAdminMixin, CooperativeAccessMixin, ListView):
+    """View to list cooperatives. Super Admin sees all, Admin/Staff see their own."""
     model = Cooperative
     template_name = 'cooperatives/cooperative_list.html'
     context_object_name = 'cooperatives'
@@ -42,7 +43,7 @@ class CooperativeUpdateView(SuperAdminRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class CooperativeDetailView(CooperativeAccessMixin, DetailView):
+class CooperativeDetailView(StaffOrAdminMixin, CooperativeAccessMixin, DetailView):
     """
     View for viewing cooperative details.
     Super Admin can see any, Admin/Staff can only see their own.
@@ -64,3 +65,15 @@ def toggle_cooperative_status(request, pk):
     
     messages.info(request, f"Cooperative '{cooperative.name}' status set to {cooperative.status.capitalize()}.")
     return redirect('cooperatives:list')
+
+
+class CooperativeDeleteView(SuperAdminRequiredMixin, DeleteView):
+    """View for Super Admin to delete a cooperative."""
+    model = Cooperative
+    template_name = 'cooperatives/cooperative_confirm_delete.html'
+    success_url = reverse_lazy('cooperatives:list')
+
+    def delete(self, request, *args, **kwargs):
+        cooperative = self.get_object()
+        messages.success(request, f"Cooperative '{cooperative.name}' was deleted successfully.")
+        return super().delete(request, *args, **kwargs)
