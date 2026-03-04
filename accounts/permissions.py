@@ -24,23 +24,23 @@ def superadmin_required(view_func):
 
 
 def admin_required(view_func):
-    """Decorator to restrict view to Cooperative Admin users only."""
+    """Decorator to restrict view to Cooperative Admin users (and Super Admin)."""
     @wraps(view_func)
     @login_required
     def wrapper(request, *args, **kwargs):
-        if not request.user.is_admin():
-            raise PermissionDenied("Only Cooperative Admin can access this page.")
+        if not (request.user.is_admin() or request.user.is_superadmin()):
+            raise PermissionDenied("Only Cooperative Admin or Super Admin can access this page.")
         return view_func(request, *args, **kwargs)
     return wrapper
 
 
 def staff_required(view_func):
-    """Decorator to restrict view to Staff users only."""
+    """Decorator to restrict view to Staff users (and Super Admin)."""
     @wraps(view_func)
     @login_required
     def wrapper(request, *args, **kwargs):
-        if not request.user.is_staff_user():
-            raise PermissionDenied("Only Staff can access this page.")
+        if not (request.user.is_staff_user() or request.user.is_superadmin()):
+            raise PermissionDenied("Only Staff or Super Admin can access this page.")
         return view_func(request, *args, **kwargs)
     return wrapper
 
@@ -57,12 +57,12 @@ def admin_or_superadmin_required(view_func):
 
 
 def staff_or_admin_required(view_func):
-    """Decorator to restrict view to Staff or Admin users."""
+    """Decorator to restrict view to Staff, Admin, or Super Admin users."""
     @wraps(view_func)
     @login_required
     def wrapper(request, *args, **kwargs):
-        if not (request.user.is_staff_user() or request.user.is_admin()):
-            raise PermissionDenied("Only Staff or Admin can access this page.")
+        if not (request.user.is_staff_user() or request.user.is_admin() or request.user.is_superadmin()):
+            raise PermissionDenied("Only Staff, Admin, or Super Admin can access this page.")
         return view_func(request, *args, **kwargs)
     return wrapper
 
@@ -96,53 +96,42 @@ def is_staff_or_admin(user):
 # ==================== CLASS-BASED MIXINS ====================
 
 class SuperAdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
-    """Mixin to restrict class-based views to Super Admin users only."""
+    """Mixin to restrict views to Super Admin users only."""
     
     def test_func(self):
-        return self.request.user.is_superadmin()
-    
-    def handle_no_permission(self):
-        raise PermissionDenied("Only Super Admin can access this page.")
+        return self.request.user.is_authenticated and self.request.user.is_superadmin()
 
 
 class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
-    """Mixin to restrict class-based views to Cooperative Admin users only."""
+    """Mixin to restrict views to Cooperative Admin or Super Admin."""
     
     def test_func(self):
-        return self.request.user.is_admin()
-    
-    def handle_no_permission(self):
-        raise PermissionDenied("Only Cooperative Admin can access this page.")
+        return self.request.user.is_authenticated and (self.request.user.is_admin() or self.request.user.is_superadmin())
 
 
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
-    """Mixin to restrict class-based views to Staff users only."""
+    """Mixin to restrict views to Staff or Super Admin."""
     
     def test_func(self):
-        return self.request.user.is_staff_user()
-    
-    def handle_no_permission(self):
-        raise PermissionDenied("Only Staff can access this page.")
+        return self.request.user.is_authenticated and (self.request.user.is_staff_user() or self.request.user.is_superadmin())
 
 
 class AdminOrSuperAdminMixin(LoginRequiredMixin, UserPassesTestMixin):
     """Mixin to restrict class-based views to Admin or Super Admin users."""
     
     def test_func(self):
-        return self.request.user.is_admin() or self.request.user.is_superadmin()
-    
-    def handle_no_permission(self):
-        raise PermissionDenied("Only Admin or Super Admin can access this page.")
+        return self.request.user.is_authenticated and (self.request.user.is_admin() or self.request.user.is_superadmin())
 
 
 class StaffOrAdminMixin(LoginRequiredMixin, UserPassesTestMixin):
-    """Mixin to restrict class-based views to Staff or Admin users."""
+    """Mixin to restrict views to Staff, Admin, or Super Admin."""
     
     def test_func(self):
-        return self.request.user.is_staff_user() or self.request.user.is_admin()
-    
-    def handle_no_permission(self):
-        raise PermissionDenied("Only Staff or Admin can access this page.")
+        return self.request.user.is_authenticated and (
+            self.request.user.is_staff_user() or 
+            self.request.user.is_admin() or 
+            self.request.user.is_superadmin()
+        )
 
 
 class CooperativeAccessMixin(LoginRequiredMixin):
