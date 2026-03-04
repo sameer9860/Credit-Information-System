@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login - Credit System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h4 class="mb-0">Credit Information System</h4>
+                <p class="mb-0 small">Secure Login</p>
+            </div>
+            <div class="card-body p-4">
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    Your username and password didn't match. Please try again.
+                </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center text-muted small py-3">
+                &copy; {{ now|date:"Y" }} Credit Information System
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
