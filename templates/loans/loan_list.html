@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .loan-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    a.button {
+        display: inline-block;
+        padding: 8px 12px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+    a.button:hover {
+        background-color: #0056b3;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    th, td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+    th {
+        background-color: #f4f4f4;
+    }
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    .status-active {
+        color: green;
+        font-weight: bold;
+    }
+    .status-overdue {
+        color: red;
+        font-weight: bold;
+    }
+    .status-default {
+        color: gray;
+    }
+</style>
+
+<div class="loan-container">
+    <h2>Loans</h2>
+    <a href="{% url 'loans:create_loan' %}" class="button">➕ Create Loan</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>S.N</th>
+                <th>Member</th>
+                <th>Amount</th>
+                <th>Remaining</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ loan.member }}</td>
+                <td>{{ loan.loan_amount }}</td>
+                <td>{{ loan.remaining_balance }}</td>
+                <td>
+                    {% if loan.status == "Active" %}
+                        <span class="status-active">Active</span>
+                    {% elif loan.status == "Overdue" %}
+                        <span class="status-overdue">Overdue</span>
+                    {% else %}
+                        <span class="status-default">{{ loan.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ loan.due_date }}</td>
+                <td>
+                    <a href="#" class="button">Edit</a>
+                    <a href="#" class="button" style="background-color:#dc3545;">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No loans available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
