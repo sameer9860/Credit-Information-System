@@ -1,55 +1,80 @@
-{%- load static -%}
+{% extends "base.html" %}
+{% load static %}
 
-{%- extends 'base.html' -%}
+{% block content %}
+<h2>Loan Details</h2>
 
-{%- block title %}Loan Details{% endblock %}
+<div class="loan-details" style="max-width:700px; margin:auto;">
 
-{%- block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow">
-            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center    ">
-                <h4 class="mb-0">Loan Details</h4>
-                <span class="badge {% if loan.status == 'Approved' %}bg-success{% elif loan.status == 'Rejected' %}bg-danger{% else %}bg-secondary{% endif %}">
-                    {{ loan.status }}
-                </span>
-            </div>
-            <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-sm-4 fw-bold">Loan ID:</div>
-                    <div class="col-sm-8">{{ loan.loan_id }}</div>
-                </div>
-                <hr>
-                <div class="row mb-3">
-                    <div class="col-sm-4 fw-bold">Member:</div>
-                    <div class="col-sm-8">  
-                        <a href="{% url 'members:member_detail' loan.member.pk %}">
-                            {{ loan.member.full_name }} ({{ loan.member.unique_system_id }})
-                        </a>
-                    </div>
-                </div>
-                <hr>
-                <div class="row mb-3">  
-                    <div class="col-sm-4 fw-bold">Loan Amount:</div>
-                    <div class="col-sm-8">Rs. {{ loan.loan_amount }}</div>
-                </div>
-                <hr>
-                <div class="row mb-3">
-                    <div class="col-sm-4 fw-bold">Loan Term:</div>
-                    <div class="col-sm-8">{{ loan.loan_term }} months</div>
-                </div>
-                <hr>
-                <div class="row mb-3">
-                    <div class="col-sm-4 fw-bold">Purpose:</div>
-                    <div class="col-sm-8">{{ loan.purpose }}</div>  
-                </div>
-                <hr>
-                <div class="row mb-3">
-                    <div class="col-sm-4 fw-bold">Applied On:</div>
-                    <div class="col-sm-8">{{ loan.created_at|date:"M d, Y" }}</div>
-                </div>  
-            </div>  
-        </div>
+    <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse: collapse;">
+        <tr>
+            <th>Loan ID</th>
+            <td>{{ loan.loan_id }}</td>
+        </tr>
+        <tr>
+            <th>Member</th>
+            <td>{{ loan.member }}</td>
+        </tr>
+        <tr>
+            <th>Cooperative</th>
+            <td>{{ loan.cooperative.name }}</td>
+        </tr>
+        <tr>
+            <th>Loan Amount</th>
+            <td>{{ loan.loan_amount }}</td>
+        </tr>
+        <tr>
+            <th>Interest Rate (%)</th>
+            <td>{{ loan.interest_rate }}</td>
+        </tr>
+        <tr>
+            <th>Loan Date</th>
+            <td>{{ loan.loan_date }}</td>
+        </tr>
+        <tr>
+            <th>Due Date</th>
+            <td>{{ loan.due_date }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>{{ loan.status }}</td>
+        </tr>
+        <tr>
+            <th>Remaining Balance</th>
+            <td>{{ loan.remaining_balance }}</td>
+        </tr>
+        <tr>
+            <th>Created By</th>
+            <td>{{ loan.created_by.username }}</td>
+        </tr>
+    </table>
+
+    <h3 style="margin-top:20px;">Guarantors</h3>
+    {% if loan.guarantors.all %}
+    <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse: collapse;">
+        <tr>
+            <th>Name</th>
+            <th>Citizenship Number</th>
+            <th>Contact Number</th>
+            <th>Status</th>
+        </tr>
+        {% for g in loan.guarantors.all %}
+        <tr>
+            <td>{{ g.name }}</td>
+            <td>{{ g.citizenship_number }}</td>
+            <td>{{ g.contact_number }}</td>
+            <td>{{ g.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No guarantors assigned to this loan.</p>
+    {% endif %}
+
+    <div style="margin-top:20px;">
+        <a href="{% url 'loans:loan_list' %}" style="padding:8px 15px; background:#007bff; color:white; text-decoration:none;">Back to Loans</a>
+        <a href="{% url 'loans:create_loan' %}" style="padding:8px 15px; background:#28a745; color:white; text-decoration:none;">Create Loan</a>
     </div>
 </div>
+
 {% endblock %}
