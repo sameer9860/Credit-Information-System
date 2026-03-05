@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from members.models import Member
 from cooperatives.models import Cooperative
+from django.conf import settings
 
 
 class Loan(models.Model):
@@ -52,7 +53,7 @@ class Loan(models.Model):
     )
 
     created_by = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True
     )
