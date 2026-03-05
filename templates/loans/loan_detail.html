@@ -1,0 +1,55 @@
+{%- load static -%}
+
+{%- extends 'base.html' -%}
+
+{%- block title %}Loan Details{% endblock %}
+
+{%- block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center    ">
+                <h4 class="mb-0">Loan Details</h4>
+                <span class="badge {% if loan.status == 'Approved' %}bg-success{% elif loan.status == 'Rejected' %}bg-danger{% else %}bg-secondary{% endif %}">
+                    {{ loan.status }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Loan ID:</div>
+                    <div class="col-sm-8">{{ loan.loan_id }}</div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Member:</div>
+                    <div class="col-sm-8">  
+                        <a href="{% url 'members:member_detail' loan.member.pk %}">
+                            {{ loan.member.full_name }} ({{ loan.member.unique_system_id }})
+                        </a>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mb-3">  
+                    <div class="col-sm-4 fw-bold">Loan Amount:</div>
+                    <div class="col-sm-8">Rs. {{ loan.loan_amount }}</div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Loan Term:</div>
+                    <div class="col-sm-8">{{ loan.loan_term }} months</div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Purpose:</div>
+                    <div class="col-sm-8">{{ loan.purpose }}</div>  
+                </div>
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Applied On:</div>
+                    <div class="col-sm-8">{{ loan.created_at|date:"M d, Y" }}</div>
+                </div>  
+            </div>  
+        </div>
+    </div>
+</div>
+{% endblock %}
