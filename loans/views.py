@@ -29,7 +29,7 @@ def create_loan(request):
             loan.created_by = request.user
             loan.save()
 
-            return redirect("loan_list")
+            return redirect("loans:loan_list")
 
     else:
         form = LoanForm()
