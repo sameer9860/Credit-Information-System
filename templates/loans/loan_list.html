@@ -86,8 +86,9 @@
                 </td>
                 <td>{{ loan.due_date }}</td>
                 <td>
-                    <a href="#" class="button">Edit</a>
-                    <a href="#" class="button" style="background-color:#dc3545;">Delete</a>
+                    <a href="{% url 'loans:update_loan' loan.loan_id %}" class="button">Edit</a>
+                    <a href="{% url 'loans:delete_loan' loan.loan_id %}" class="button" style="background-color:#dc3545;">Delete</a>
+                    <a href="{% url 'loans:loan_detail' loan.loan_id %}" class="button" style="background-color:#28a745;">Details</a>
                 </td>
             </tr>
             {% empty %}
