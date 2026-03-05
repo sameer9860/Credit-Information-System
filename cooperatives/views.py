@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from .models import Cooperative
 from accounts.permissions import (
     SuperAdminRequiredMixin, 
