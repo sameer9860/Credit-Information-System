@@ -1,25 +1,16 @@
 from django.urls import path
-from . import views
+from .views import (
+    LoanListView, LoanDetailView,
+    LoanCreateView, LoanUpdateView,
+    LoanDeleteView
+)
 
-app_name = 'loans'
+app_name = 'loans'  # important for namespacing
 
 urlpatterns = [
-
-    path(
-        '',
-        views.loan_list,
-        name="loan_list"
-    ),
-
-    path(
-        'create/',
-        views.create_loan,
-        name="create_loan"
-    ),
-
-    path(
-        '<int:loan_id>/',
-        views.loan_detail,
-        name="loan_detail"
-    ),
+    path('', LoanListView.as_view(), name='loan_list'),
+    path('create/', LoanCreateView.as_view(), name='create_loan'),
+    path('<int:loan_id>/', LoanDetailView.as_view(), name='loan_detail'),
+    path('<int:loan_id>/update/', LoanUpdateView.as_view(), name='update_loan'),
+    path('<int:loan_id>/delete/', LoanDeleteView.as_view(), name='delete_loan'),
 ]
