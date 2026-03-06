@@ -73,3 +73,19 @@ class Loan(models.Model):
 
     def __str__(self):
         return f"Loan {self.loan_id} - {self.member}"
+
+class Guarantor(models.Model):
+    STATUS_CHOICES = [
+        ('Active', 'Active'),
+        ('Released', 'Released'),
+    ]
+
+    name = models.CharField(max_length=255)
+    citizenship_number = models.CharField(max_length=50)
+    loan = models.ForeignKey(Loan, on_delete=models.CASCADE, related_name="guarantors")
+    member = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True, related_name="guaranteed_loans", help_text="Optional: If guarantor is also a member")
+    contact_number = models.CharField(max_length=15)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Active')
+
+    def __str__(self):
+        return f"{self.name} (Guarantor for {self.loan})"
