@@ -70,7 +70,7 @@
                     <div class="card-body text-center py-5">
                         <h1 class="display-4">{{ cooperative.members.count|default:"0" }}</h1>
                         <p class="text-muted">Total Members</p>
-                        <a href="#" class="btn btn-sm btn-link">View Members</a>
+                        <a href="{% url 'members:member_list' %}" class="btn btn-sm btn-link">View Members</a>
                     </div>
                 </div>
             </div>
@@ -79,7 +79,7 @@
                     <div class="card-body text-center py-5">
                         <h1 class="display-4">{{ cooperative.loans.count|default:"0" }}</h1>
                         <p class="text-muted">Active Loans</p>
-                        <a href="#" class="btn btn-sm btn-link">View Loans</a>
+                        <a href="{% url 'loans:loan_list' %}" class="btn btn-sm btn-link">View Loans</a>
                     </div>
                 </div>
             </div>
