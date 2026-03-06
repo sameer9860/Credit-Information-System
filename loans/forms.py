@@ -61,3 +61,11 @@ GuarantorFormSet = inlineformset_factory(
     extra=1, 
     can_delete=True
 )
+
+GuarantorUpdateFormSet = inlineformset_factory(
+    Loan, 
+    Guarantor, 
+    fields=('name', 'citizenship_number', 'contact_number', 'status'),
+    extra=0, 
+    can_delete=True
+)
