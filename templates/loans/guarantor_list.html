@@ -7,10 +7,12 @@
         margin: 0 auto;
         padding: 20px;
     }
+
     h2 {
         text-align: center;
         margin-bottom: 20px;
     }
+
     .button {
         display: inline-block;
         padding: 8px 12px;
@@ -20,29 +22,37 @@
         border-radius: 4px;
         margin-bottom: 15px;
     }
+
     .button:hover {
         background-color: #0056b3;
     }
+
     table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 10px;
     }
-    th, td {
+
+    th,
+    td {
         padding: 10px;
         text-align: center;
         border: 1px solid #ddd;
     }
+
     th {
         background-color: #f4f4f4;
     }
+
     tr:nth-child(even) {
         background-color: #f9f9f9;
     }
+
     .status-active {
         color: green;
         font-weight: bold;
     }
+
     .status-released {
         color: gray;
         font-weight: bold;
@@ -59,8 +69,8 @@
                 <tr>
                     <th>S.N</th>
                     <th>Name</th>
-                    <th>Citizenship #</th>
-                    <th>Loan ID</th>
+                    <th>Citizenship </th>
+                    <th>Loan Taker</th>
                     <th>Contact</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -70,20 +80,28 @@
                 {% for guarantor in guarantors %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ guarantor.name }}</td>
+                    <td>
+                        <a href="{% url 'loans:guarantor_detail' guarantor.pk %}" class="text-decoration-none fw-bold">
+                            {{ guarantor.name }}
+                        </a>
+                    </td>
                     <td>{{ guarantor.citizenship_number }}</td>
-                    <td><a href="{% url 'loans:loan_detail' guarantor.loan.loan_id %}">{{ guarantor.loan.loan_id }}</a></td>
+                    <td><a href="{% url 'loans:loan_detail' guarantor.loan.loan_id %}">{{ guarantor.loan.member.full_name }}</a></td>
+
+
                     <td>{{ guarantor.contact_number }}</td>
                     <td>
                         {% if guarantor.status == "Active" %}
-                            <span class="status-active">Active</span>
+                        <span class="status-active">Active</span>
                         {% else %}
-                            <span class="status-released">Released</span>
+                        <span class="status-released">Released</span>
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{% url 'loans:update_guarantor' guarantor.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                        <a href="{% url 'loans:delete_guarantor' guarantor.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        <a href="{% url 'loans:update_guarantor' guarantor.pk %}"
+                            class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'loans:delete_guarantor' guarantor.pk %}"
+                            class="btn btn-sm btn-outline-danger">Delete</a>
                     </td>
                 </tr>
                 {% empty %}
