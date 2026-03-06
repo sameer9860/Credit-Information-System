@@ -1,5 +1,5 @@
 from django import forms
-from .models import Loan
+from .models import Loan, Guarantor
 
 class LoanForm(forms.ModelForm):
     class Meta:
@@ -31,3 +31,24 @@ class LoanForm(forms.ModelForm):
             raise forms.ValidationError("Due date must be after loan date")
 
         return cleaned_data
+
+class GuarantorForm(forms.ModelForm):
+    class Meta:
+        model = Guarantor
+        fields = [
+            "name",
+            "citizenship_number",
+            "loan",
+            "member",
+            "contact_number",
+            "status",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user and not user.is_superadmin():
+            # Filter loans to only those in the user's cooperative
+            self.fields['loan'].queryset = Loan.objects.filter(cooperative=user.cooperative)
+            # Filter members to only those in the user's cooperative
+            self.fields['member'].queryset = self.fields['member'].queryset.filter(cooperative=user.cooperative)
