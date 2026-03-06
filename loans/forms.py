@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import inlineformset_factory
 from .models import Loan, Guarantor
 
 class LoanForm(forms.ModelForm):
@@ -52,3 +53,11 @@ class GuarantorForm(forms.ModelForm):
             self.fields['loan'].queryset = Loan.objects.filter(cooperative=user.cooperative)
             # Filter members to only those in the user's cooperative
             self.fields['member'].queryset = self.fields['member'].queryset.filter(cooperative=user.cooperative)
+
+GuarantorFormSet = inlineformset_factory(
+    Loan, 
+    Guarantor, 
+    fields=('name', 'citizenship_number', 'contact_number', 'status'),
+    extra=1, 
+    can_delete=True
+)
