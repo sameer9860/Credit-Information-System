@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Loan, Guarantor
-from .forms import LoanForm, GuarantorForm, GuarantorFormSet
+from .forms import LoanForm, GuarantorForm, GuarantorFormSet, GuarantorUpdateFormSet
 from accounts.permissions import StaffOrAdminMixin, AdminOrSuperAdminMixin, CooperativeAccessMixin
 
 # -----------------------
@@ -96,9 +96,9 @@ class LoanUpdateView(StaffOrAdminMixin, SuccessMessageMixin, CooperativeAccessMi
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
-            data['guarantor_formset'] = GuarantorFormSet(self.request.POST, instance=self.get_object())
+            data['guarantor_formset'] = GuarantorUpdateFormSet(self.request.POST, instance=self.get_object())
         else:
-            data['guarantor_formset'] = GuarantorFormSet(instance=self.get_object())
+            data['guarantor_formset'] = GuarantorUpdateFormSet(instance=self.get_object())
         return data
 
     def form_valid(self, form):
