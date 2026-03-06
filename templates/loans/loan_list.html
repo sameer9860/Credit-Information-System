@@ -7,10 +7,12 @@
         margin: 0 auto;
         padding: 20px;
     }
+
     h2 {
         text-align: center;
         margin-bottom: 20px;
     }
+
     a.button {
         display: inline-block;
         padding: 8px 12px;
@@ -20,33 +22,42 @@
         border-radius: 4px;
         margin-bottom: 15px;
     }
+
     a.button:hover {
         background-color: #0056b3;
     }
+
     table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 10px;
     }
-    th, td {
+
+    th,
+    td {
         padding: 10px;
         text-align: center;
         border: 1px solid #ddd;
     }
+
     th {
         background-color: #f4f4f4;
     }
+
     tr:nth-child(even) {
         background-color: #f9f9f9;
     }
+
     .status-active {
         color: green;
         font-weight: bold;
     }
+
     .status-overdue {
         color: red;
         font-weight: bold;
     }
+
     .status-default {
         color: gray;
     }
@@ -63,6 +74,7 @@
                 <th>Member</th>
                 <th>Amount</th>
                 <th>Remaining</th>
+                <th>Guarantors</th>
                 <th>Status</th>
                 <th>Due Date</th>
                 <th>Actions</th>
@@ -72,23 +84,34 @@
             {% for loan in loans %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ loan.member }}</td>
+                <td><a href="{% url 'loans:loan_detail' loan.loan_id %}">{{ loan.member.full_name }}</a></td>
                 <td>{{ loan.loan_amount }}</td>
                 <td>{{ loan.remaining_balance }}</td>
                 <td>
+                    {% for guarantor in loan.guarantors.all %}
+                    <a href="{% url 'loans:guarantor_detail' guarantor.pk %}" class="text-decoration-none">
+                        {{ guarantor.name }}
+                    </a>{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                    -
+                    {% endfor %}
+                </td>
+                <td>
                     {% if loan.status == "Active" %}
-                        <span class="status-active">Active</span>
+                    <span class="status-active">Active</span>
                     {% elif loan.status == "Overdue" %}
-                        <span class="status-overdue">Overdue</span>
+                    <span class="status-overdue">Overdue</span>
                     {% else %}
-                        <span class="status-default">{{ loan.status }}</span>
+                    <span class="status-default">{{ loan.status }}</span>
                     {% endif %}
                 </td>
                 <td>{{ loan.due_date }}</td>
                 <td>
                     <a href="{% url 'loans:update_loan' loan.loan_id %}" class="button">Edit</a>
-                    <a href="{% url 'loans:delete_loan' loan.loan_id %}" class="button" style="background-color:#dc3545;">Delete</a>
-                    <a href="{% url 'loans:loan_detail' loan.loan_id %}" class="button" style="background-color:#28a745;">Details</a>
+                    <a href="{% url 'loans:delete_loan' loan.loan_id %}" class="button"
+                        style="background-color:#dc3545;">Delete</a>
+                    <a href="{% url 'loans:loan_detail' loan.loan_id %}" class="button"
+                        style="background-color:#28a745;">Details</a>
                 </td>
             </tr>
             {% empty %}
