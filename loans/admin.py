@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Loan
+from .models import Loan, Guarantor
 
 
 @admin.register(Loan)
@@ -26,3 +26,16 @@ class LoanAdmin(admin.ModelAdmin):
         "member__name",
         "loan_id"
     )
+
+
+@admin.register(Guarantor)
+class GuarantorAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "citizenship_number",
+        "loan",
+        "member",
+        "status"
+    )
+    list_filter = ("status",)
+    search_fields = ("name", "citizenship_number", "loan__loan_id")
