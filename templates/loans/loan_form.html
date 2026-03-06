@@ -8,38 +8,49 @@
         padding: 20px;
         background: #f9f9f9;
         border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
+
     h2 {
         text-align: center;
         margin-bottom: 20px;
         color: #333;
     }
+
     form {
         display: flex;
         flex-direction: column;
     }
+
     form p {
         margin-bottom: 15px;
     }
+
     label {
         font-weight: bold;
         display: block;
         margin-bottom: 5px;
         color: #444;
     }
-    input, select, textarea {
+
+    input,
+    select,
+    textarea {
         width: 100%;
         padding: 8px;
         border: 1px solid #ddd;
         border-radius: 4px;
         font-size: 14px;
     }
-    input:focus, select:focus, textarea:focus {
+
+    input:focus,
+    select:focus,
+    textarea:focus {
         border-color: #007bff;
         outline: none;
-        box-shadow: 0 0 4px rgba(0,123,255,0.3);
+        box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
     }
+
     button {
         padding: 10px;
         background-color: #007bff;
@@ -50,9 +61,11 @@
         cursor: pointer;
         margin-top: 10px;
     }
+
     button:hover {
         background-color: #0056b3;
     }
+
     .errorlist {
         color: red;
         margin-bottom: 10px;
@@ -61,15 +74,34 @@
     }
 </style>
 
-<div class="form-container">
+<div class="form-container" style="max-width: 800px;">
     <h2>Create Loan</h2>
 
     <form method="post">
         {% csrf_token %}
-        
-        {{ form.as_p }}
 
-        <button type="submit">💾 Save Loan</button>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Loan Details</h4>
+                {{ form.as_p }}
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Guarantor Details</h4>
+                {{ guarantor_formset.management_form }}
+                {% for g_form in guarantor_formset %}
+                <div class="guarantor-form border p-3 mb-3 bg-white rounded">
+                    {{ g_form.as_p }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">💾 Save Loan & Guarantors</button>
     </form>
 </div>
 
