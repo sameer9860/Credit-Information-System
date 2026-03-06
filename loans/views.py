@@ -1,9 +1,10 @@
+from django.db import transaction
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Loan, Guarantor
-from .forms import LoanForm, GuarantorForm
+from .forms import LoanForm, GuarantorForm, GuarantorFormSet
 from accounts.permissions import StaffOrAdminMixin, AdminOrSuperAdminMixin, CooperativeAccessMixin
 
 # -----------------------
@@ -47,12 +48,34 @@ class LoanCreateView(StaffOrAdminMixin, SuccessMessageMixin, LoginRequiredMixin,
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['guarantor_formset'] = GuarantorFormSet(self.request.POST)
+        else:
+            data['guarantor_formset'] = GuarantorFormSet()
+        return data
+
     def form_valid(self, form):
-        # Assign cooperative from user if not superadmin
-        if not self.request.user.is_superadmin():
-            form.instance.cooperative = self.request.user.cooperative
-        form.instance.created_by = self.request.user
-        return super().form_valid(form)
+        context = self.get_context_data()
+        guarantor_formset = context['guarantor_formset']
+        
+        with transaction.atomic():
+            # Assign cooperative from user if not superadmin
+            if not self.request.user.is_superadmin():
+                form.instance.cooperative = self.request.user.cooperative
+            form.instance.created_by = self.request.user
+            self.object = form.save() # Save the loan instance first
+            
+            if guarantor_formset.is_valid():
+                guarantor_formset.instance = self.object # Link formset to the saved loan
+                guarantor_formset.save()
+            else:
+                # If formset is invalid, return form_invalid for the main form
+                # This will re-render the form with errors
+                return self.form_invalid(form)
+                
+        return super().form_valid(form) # Call super().form_valid to handle redirect and success message
 
 # -----------------------
 # Loan Update
@@ -65,11 +88,37 @@ class LoanUpdateView(StaffOrAdminMixin, SuccessMessageMixin, CooperativeAccessMi
     pk_url_kwarg = "loan_id"
     success_message = "Loan for %(member)s was updated successfully."
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['guarantor_formset'] = GuarantorFormSet(self.request.POST, instance=self.get_object())
+        else:
+            data['guarantor_formset'] = GuarantorFormSet(instance=self.get_object())
+        return data
+
     def form_valid(self, form):
-        # Keep the original creator, don’t overwrite
-        if not form.instance.created_by:
-            form.instance.created_by = self.request.user
-        return super().form_valid(form)
+        context = self.get_context_data()
+        guarantor_formset = context['guarantor_formset']
+        
+        with transaction.atomic():
+            # Keep the original creator, don’t overwrite
+            if not form.instance.created_by:
+                form.instance.created_by = self.request.user
+            self.object = form.save() # Save the loan instance first
+            
+            if guarantor_formset.is_valid():
+                guarantor_formset.save()
+            else:
+                # If formset is invalid, return form_invalid for the main form
+                # This will re-render the form with errors
+                return self.form_invalid(form)
+                
+        return super().form_valid(form) # Call super().form_valid to handle redirect and success message
 # -----------------------
 # Loan Delete
 # -----------------------
@@ -137,6 +186,20 @@ class GuarantorDeleteView(AdminOrSuperAdminMixin, LoginRequiredMixin, DeleteView
     model = Guarantor
     template_name = 'loans/guarantor_confirm_delete.html'
     success_url = reverse_lazy('loans:guarantor_list')
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if not self.request.user.is_superadmin():
+            qs = qs.filter(loan__cooperative=self.request.user.cooperative)
+        return qs
+
+# -----------------------
+# Guarantor Detail
+# -----------------------
+class GuarantorDetailView(StaffOrAdminMixin, LoginRequiredMixin, DetailView):
+    model = Guarantor
+    template_name = 'loans/guarantor_detail.html'
+    context_object_name = 'guarantor'
 
     def get_queryset(self):
         qs = super().get_queryset()
