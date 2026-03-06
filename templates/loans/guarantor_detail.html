@@ -76,9 +76,11 @@
                     <a href="{% url 'loans:guarantor_list' %}" class="btn btn-outline-secondary">
                         <i class="fa-solid fa-arrow-left"></i> Back to List
                     </a>
+                    {% if user.is_superadmin or user.is_admin %}
                     <a href="{% url 'loans:delete_guarantor' guarantor.pk %}" class="btn btn-outline-danger btn-sm">
                         <i class="fa-solid fa-trash"></i> Delete
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
