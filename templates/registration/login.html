@@ -10,248 +10,232 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+    body {
+        background: radial-gradient(circle at top, #1e293b, #020617);
+        min-height: 100vh;
+    }
 
-body{
-background: radial-gradient(circle at top,#1e293b,#020617);
-min-height:100vh;
-}
+    /* Wrapper */
 
-/* Wrapper */
+    .login-wrapper {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-.login-wrapper{
-min-height:90vh;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+    /* Glass card */
 
-/* Glass card */
+    .login-card {
+        background: rgba(30, 41, 59, 0.65);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 40px;
+        color: #e2e8f0;
+        animation: floatCard 0.8s ease;
+    }
 
-.login-card{
-background: rgba(30,41,59,0.65);
-backdrop-filter: blur(14px);
-border:1px solid rgba(255,255,255,0.08);
-border-radius:16px;
-padding:40px;
-color:#e2e8f0;
-animation: floatCard 0.8s ease;
-}
+    /* Animation */
 
-/* Animation */
+    @keyframes floatCard {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
 
-@keyframes floatCard{
-from{
-opacity:0;
-transform: translateY(30px);
-}
-to{
-opacity:1;
-transform: translateY(0);
-}
-}
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-/* Header */
+    /* Header */
 
-.login-header{
-text-align:center;
-margin-bottom:20px;
-}
+    .login-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-.system-icon{
-font-size:46px;
-color:#38bdf8;
-}
+    .system-icon {
+        font-size: 46px;
+        color: #38bdf8;
+    }
 
-.login-header h3{
-margin-top:10px;
-font-weight:600;
-}
+    .login-header h3 {
+        margin-top: 10px;
+        font-weight: 600;
+    }
 
-.login-header p{
-color:#94a3b8;
-}
+    .login-header p {
+        color: #94a3b8;
+    }
 
-/* Inputs */
+    /* Inputs */
 
-.form-control{
-background: rgba(2,6,23,0.7);
-border:1px solid #334155;
-color:#e2e8f0;
-border-radius:8px;
-}
+    .form-control {
+        background: rgba(2, 6, 23, 0.7);
+        border: 1px solid #334155;
+        color: #e2e8f0;
+        border-radius: 8px;
+    }
 
-.form-control:focus{
-background: rgba(2,6,23,0.9);
-border-color:#38bdf8;
-color:#fff;
-box-shadow:none;
-}
+    .form-control:focus {
+        background: rgba(2, 6, 23, 0.9);
+        border-color: #38bdf8;
+        color: #fff;
+        box-shadow: none;
+    }
 
-/* Button */
+    /* Button */
 
-.btn-login{
-background:#38bdf8;
-border:none;
-font-weight:600;
-border-radius:8px;
-}
+    .btn-login {
+        background: #38bdf8;
+        border: none;
+        font-weight: 600;
+        border-radius: 8px;
+    }
 
-.btn-login:hover{
-background:#0ea5e9;
-}
+    .btn-login:hover {
+        background: #0ea5e9;
+    }
 
-/* Security badge */
+    /* Security badge */
 
-.security-badge{
-background:rgba(34,197,94,0.15);
-border:1px solid rgba(34,197,94,0.4);
-color:#22c55e;
-padding:6px 12px;
-border-radius:20px;
-font-size:12px;
-display:inline-block;
-margin-top:8px;
-}
+    .security-badge {
+        background: rgba(34, 197, 94, 0.15);
+        border: 1px solid rgba(34, 197, 94, 0.4);
+        color: #22c55e;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        display: inline-block;
+        margin-top: 8px;
+    }
 
-/* System status */
+    /* System status */
 
-.system-status{
-margin-top:20px;
-padding:10px;
-border-radius:8px;
-background:rgba(56,189,248,0.08);
-border:1px solid rgba(56,189,248,0.25);
-font-size:13px;
-}
+    .system-status {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 8px;
+        background: rgba(56, 189, 248, 0.08);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        font-size: 13px;
+    }
 
-.status-dot{
-height:8px;
-width:8px;
-background:#22c55e;
-border-radius:50%;
-display:inline-block;
-margin-right:6px;
-}
+    .status-dot {
+        height: 8px;
+        width: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 6px;
+    }
 
-/* Toggle password */
+    /* Toggle password */
 
-.toggle-password{
-position:absolute;
-right:15px;
-top:38px;
-cursor:pointer;
-color:#94a3b8;
-}
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 38px;
+        cursor: pointer;
+        color: #94a3b8;
+    }
 
-.toggle-password:hover{
-color:#38bdf8;
-}
+    .toggle-password:hover {
+        color: #38bdf8;
+    }
 
-/* Footer */
+    /* Footer */
 
-.footer-text{
-font-size:12px;
-color:#64748b;
-margin-top:20px;
-text-align:center;
-}
-
+    .footer-text {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 20px;
+        text-align: center;
+    }
 </style>
 
 <div class="container login-wrapper">
 
-<div class="col-md-5 col-lg-4">
+    <div class="col-md-5 col-lg-4">
 
-<div class="login-card shadow-lg">
+        <div class="login-card shadow-lg">
 
-<div class="login-header">
+            <!-- Login Header removed -->
 
-<div class="system-icon">
-<i class="fa-solid fa-shield-halved"></i>
-</div>
+            {% if form.errors %}
 
-<h3>Credit Information System</h3>
+            <div class="alert alert-danger">
+                Invalid username or password
+            </div>
+            {% endif %}
 
+            <form method="post">
 
+                {% csrf_token %}
 
-</div>
+                <!-- Username -->
 
-{% if form.errors %}
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
 
-<div class="alert alert-danger">
-Invalid username or password
-</div>
-{% endif %}
+                <!-- Password with toggle -->
 
-<form method="post">
+                <div class="mb-3 position-relative">
 
-{% csrf_token %}
+                    <label class="form-label">Password</label>
 
-<!-- Username -->
+                    <input type="password" name="password" class="form-control" id="password-field" required>
 
-<div class="mb-3">
-<label class="form-label">Username</label>
-<input type="text" name="username" class="form-control" required>
-</div>
+                    <span class="fa fa-eye-slash toggle-password" id="togglePassword"> </span>
 
-<!-- Password with toggle -->
+                </div>
 
-<div class="mb-3 position-relative">
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-login btn-lg">
+                        Login
+                    </button>
+                </div>
 
-<label class="form-label">Password</label>
-
-<input type="password"
-name="password"
-class="form-control"
-id="password-field"
-required>
-
-<span class="fa fa-eye-slash toggle-password"
-id="togglePassword"> </span>
-
-</div>
-
-<div class="d-grid mt-4">
-<button type="submit" class="btn btn-login btn-lg">
-Login 
-</button>
-</div>
-
-</form>
+            </form>
 
 
-<div class="footer-text">
-© 2026 Credit Information System
-</div>
+            <div class="footer-text">
+                © 2026 Credit Information System
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </div>
 
 <script>
 
-const togglePassword = document.querySelector("#togglePassword");
-const password = document.querySelector("#password-field");
+    const togglePassword = document.querySelector("#togglePassword");
+    const password = document.querySelector("#password-field");
 
-togglePassword.addEventListener("click", function () {
+    togglePassword.addEventListener("click", function () {
 
-if (password.type === "password") {
+        if (password.type === "password") {
 
-password.type = "text";
-this.classList.remove("fa-eye-slash");
-this.classList.add("fa-eye");
+            password.type = "text";
+            this.classList.remove("fa-eye-slash");
+            this.classList.add("fa-eye");
 
-} else {
+        } else {
 
-password.type = "password";
-this.classList.remove("fa-eye");
-this.classList.add("fa-eye-slash");
+            password.type = "password";
+            this.classList.remove("fa-eye");
+            this.classList.add("fa-eye-slash");
 
-}
+        }
 
-});
+    });
 
 </script>
 
