@@ -104,15 +104,13 @@
 
 <body>
 
+    {% if user.is_authenticated %}
     <!-- Sidebar -->
-
     <div id="sidebar" class="sidebar">
 
         <div class="sidebar-brand">
             <i class="fa-solid fa-building-columns"></i> Credit System
         </div>
-
-        {% if user.is_authenticated %}
 
         <a href="{% url 'accounts:dashboard' %}">
             <i class="fa-solid fa-chart-line me-2"></i> Dashboard
@@ -137,38 +135,28 @@
                 class="fa-solid fa-handshake me-2"></i> My Cooperative </a>
         {% endif %}
 
-        {% endif %}
-
     </div>
+    {% endif %}
 
     <!-- Main Content -->
 
-    <div id="mainContent" class="main-content">
+    <div id="mainContent" class="{% if user.is_authenticated %}main-content{% else %}container-fluid{% endif %}">
 
+        {% if user.is_authenticated %}
         <!-- Topbar -->
-
         <div class="topbar">
-
             <div class="toggle-btn" onclick="toggleSidebar()">
                 <i class="fa-solid fa-bars"></i>
             </div>
 
             <div>
-
-                {% if user.is_authenticated %}
-
                 <div class="dropdown">
-
                     <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button"
                         data-bs-toggle="dropdown">
-
                         <i class="fa-solid fa-user"></i>
                         {{ user.username }}
-
                     </a>
-
                     <ul class="dropdown-menu dropdown-menu-end shadow">
-
                         <li>
                             <form action="{% url 'accounts:logout' %}" method="post">
                                 {% csrf_token %}
@@ -177,22 +165,11 @@
                                 </button>
                             </form>
                         </li>
-
                     </ul>
-
                 </div>
-
-                {% else %}
-
-                <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm">
-                    Login
-                </a>
-
-                {% endif %}
-
             </div>
-
         </div>
+        {% endif %}
 
         <!-- Page Content -->
 
