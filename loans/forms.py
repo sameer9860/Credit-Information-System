@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from .models import Loan, Guarantor
+from .services import validate_loan_eligibility
 
 class LoanForm(forms.ModelForm):
     class Meta:
@@ -27,9 +28,17 @@ class LoanForm(forms.ModelForm):
         cleaned_data = super().clean()
         loan_date = cleaned_data.get("loan_date")
         due_date = cleaned_data.get("due_date")
+        member = cleaned_data.get("member")
 
         if loan_date and due_date and due_date < loan_date:
             raise forms.ValidationError("Due date must be after loan date")
+
+        if member:
+            try:
+                validate_loan_eligibility(member)
+            except forms.ValidationError as e:
+                # Add the error to the member field
+                self.add_error('member', e)
 
         return cleaned_data
 
