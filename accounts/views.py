@@ -4,6 +4,9 @@ from cooperatives.models import Cooperative
 from members.models import Member
 from loans.models import Loan, Guarantor
 from django.db.models import Count
+from django.db.models.functions import ExtractMonth
+from django.utils import timezone
+import json
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -27,6 +30,44 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             
             context['recent_members'] = Member.objects.all().order_by('-created_at')[:5]
             context['recent_cooperatives'] = Cooperative.objects.all().order_by('-created_at')[:5]
+
+            # Chart 1: Member Status (Doughnut)
+            active_members = context['total_members'] - context['blacklisted_members']
+            context['member_status_labels'] = json.dumps(['Active', 'Blacklisted'])
+            context['member_status_data'] = json.dumps([active_members, context['blacklisted_members']])
+
+            # Chart 2: Loan Status (Pie)
+            loan_stats = Loan.objects.values('status').annotate(count=Count('loan_id'))
+            loan_labels = []
+            loan_counts = []
+            for stat in loan_stats:
+                loan_labels.append(stat['status'])
+                loan_counts.append(stat['count'])
+            context['loan_status_labels'] = json.dumps(loan_labels)
+            context['loan_status_data'] = json.dumps(loan_counts)
+
+            # Chart 3: Members per Cooperative (Bar)
+            coop_member_stats = Cooperative.objects.annotate(member_count=Count('members')).values('name', 'member_count')
+            coop_labels = [stat['name'] for stat in coop_member_stats]
+            coop_counts = [stat['member_count'] for stat in coop_member_stats]
+            context['coop_member_labels'] = json.dumps(coop_labels)
+            context['coop_member_data'] = json.dumps(coop_counts)
+
+            # Chart 4: Monthly Loan Issuance (Line) - Current Year
+            current_year = timezone.now().year
+            monthly_loans = Loan.objects.filter(loan_date__year=current_year)\
+                .annotate(month=ExtractMonth('loan_date'))\
+                .values('month')\
+                .annotate(count=Count('loan_id'))\
+                .order_by('month')
+            
+            month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            monthly_data = [0] * 12
+            for entry in monthly_loans:
+                monthly_data[entry['month'] - 1] = entry['count']
+            
+            context['monthly_loan_labels'] = json.dumps(month_names)
+            context['monthly_loan_data'] = json.dumps(monthly_data)
         else:
             # Stats for Cooperative Admin/Staff
             if user.cooperative:
