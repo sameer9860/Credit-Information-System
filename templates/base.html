@@ -115,6 +115,12 @@
         <a href="{% url 'accounts:dashboard' %}">
             <i class="fa-solid fa-chart-line me-2"></i> Dashboard
         </a>
+        {% if user.is_superadmin %} <a href="{% url 'cooperatives:list' %}"> <i class="fa-solid fa-building me-2"></i>
+            Cooperatives </a>
+
+        {% elif user.cooperative %} <a href="{% url 'cooperatives:detail' user.cooperative.pk %}"> <i
+                class="fa-solid fa-handshake me-2"></i> My Cooperative </a>
+        {% endif %}
 
         <a href="{% url 'members:member_list' %}">
             <i class="fa-solid fa-users me-2"></i> Members
@@ -128,12 +134,7 @@
             <i class="fa-solid fa-shield-halved me-2"></i> Guarantors
         </a>
 
-        {% if user.is_superadmin %} <a href="{% url 'cooperatives:list' %}"> <i class="fa-solid fa-building me-2"></i>
-            Cooperatives </a>
 
-        {% elif user.cooperative %} <a href="{% url 'cooperatives:detail' user.cooperative.pk %}"> <i
-                class="fa-solid fa-handshake me-2"></i> My Cooperative </a>
-        {% endif %}
 
     </div>
     {% endif %}
