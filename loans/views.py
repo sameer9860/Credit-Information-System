@@ -207,3 +207,5 @@ class GuarantorDetailView(StaffOrAdminMixin, LoginRequiredMixin, DetailView):
         if not self.request.user.is_superadmin():
             qs = qs.filter(loan__cooperative=self.request.user.cooperative)
         return qs
+    
+    
