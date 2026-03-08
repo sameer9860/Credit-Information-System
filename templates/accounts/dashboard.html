@@ -15,38 +15,48 @@
 <div class="row mb-4">
     <div class="col-md-3">
         <div class="card bg-primary text-white shadow">
-            <div class="card-body">
-                <h5 class="card-title">Total Cooperatives</h5>
-                <h2 class="display-4">{{ total_cooperatives }}</h2>
-                <p class="mb-0">{{ active_cooperatives }} Active</p>
+            <div class="card-body text-center">
+                <h6 class="card-title text-uppercase mb-2">Total Cooperatives</h6>
+                <h2 class="display-5 fw-bold mb-1">{{ total_cooperatives }}</h2>
+                <p class="mb-0 small opacity-75">{{ active_cooperatives }} Active</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card bg-success text-white shadow">
-            <div class="card-body">
-                <h5 class="card-title">Total Members</h5>
-                <h2 class="display-4">{{ total_members }}</h2>
-                <p class="mb-0">Across all coops</p>
+            <div class="card-body text-center">
+                <h6 class="card-title text-uppercase mb-2">Total Members</h6>
+                <h2 class="display-5 fw-bold mb-1">{{ total_members }}</h2>
+                <p class="mb-0 small opacity-75">System-wide</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark shadow">
+            <div class="card-body text-center">
+                <h6 class="card-title text-uppercase mb-2">Total Loans</h6>
+                <h2 class="display-5 fw-bold mb-1">{{ total_loans }}</h2>
+                <p class="mb-0 small opacity-75">Across all coops</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card bg-danger text-white shadow">
-            <div class="card-body">
-                <h5 class="card-title">Blacklisted</h5>
-                <h2 class="display-4">{{ blacklisted_members }}</h2>
-                <p class="mb-0">System-wide</p>
+            <div class="card-body text-center">
+                <h6 class="card-title text-uppercase mb-2">System Overdue</h6>
+                <h2 class="display-5 fw-bold mb-1">{{ system_overdue_loans }}</h2>
+                <p class="mb-0 small opacity-75">Action required</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card bg-info text-white shadow">
-            <div class="card-body">
-                <h5 class="card-title">Django Admin</h5>
-                <div class="mt-3">
-                    <a href="/admin/" class="btn btn-light btn-sm w-100">Go to DB Admin</a>
-                </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card border-0 bg-light">
+            <div class="card-body d-flex justify-content-between align-items-center py-2">
+                <span class="text-muted"><i class="bi bi-shield-check"></i> Blacklisted Members: <strong>{{ blacklisted_members }}</strong></span>
+                <a href="/admin/" class="btn btn-outline-secondary btn-sm"><i class="bi bi-gear"></i> Django Admin</a>
             </div>
         </div>
     </div>
@@ -94,30 +104,49 @@
 {% else %}
 <!-- Cooperative Admin/Staff Dashboard -->
 <div class="row mb-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card bg-primary text-white shadow">
-            <div class="card-body">
-                <h5 class="card-title">Cooperative Members</h5>
-                <h2 class="display-4">{{ total_members }}</h2>
-                <p class="mb-0">Active and Blacklisted</p>
+            <div class="card-body text-center">
+                <h6 class="card-title text-uppercase mb-2">Members</h6>
+                <h2 class="display-5 fw-bold mb-1">{{ total_members }}</h2>
+                <p class="mb-0 small opacity-75">Total Enrolled</p>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <div class="card bg-success text-white shadow">
+            <div class="card-body text-center">
+                <h6 class="card-title text-uppercase mb-2">Active Loans</h6>
+                <h2 class="display-5 fw-bold mb-1">{{ active_loans }}</h2>
+                <p class="mb-0 small opacity-75">Currently running</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
         <div class="card bg-danger text-white shadow">
-            <div class="card-body">
-                <h5 class="card-title">Blacklisted</h5>
-                <h2 class="display-4">{{ blacklisted_members }}</h2>
-                <p class="mb-0">In your cooperative</p>
+            <div class="card-body text-center">
+                <h6 class="card-title text-uppercase mb-2">Overdue Loans</h6>
+                <h2 class="display-5 fw-bold mb-1">{{ overdue_loans }}</h2>
+                <p class="mb-0 small opacity-75">Action needed</p>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card bg-info text-white shadow">
-            <div class="card-body">
-                <h5 class="card-title">My Cooperative</h5>
-                <p class="mb-1"><strong>{{ my_cooperative.name }}</strong></p>
-                <p class="mb-0 small">Code: {{ my_cooperative.code }}</p>
+            <div class="card-body text-center">
+                <h6 class="card-title text-uppercase mb-2">Blacklisted</h6>
+                <h2 class="display-5 fw-bold mb-1">{{ blacklisted_members }}</h2>
+                <p class="mb-0 small opacity-75">In this coop</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card border-0 bg-light">
+            <div class="card-body py-2">
+                <span class="text-muted"><i class="bi bi-building"></i> My Cooperative: <strong>{{ my_cooperative.name }}</strong> ({{ my_cooperative.code }})</span>
             </div>
         </div>
     </div>
