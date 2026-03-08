@@ -77,11 +77,174 @@
 </div>
 
 <div class="row mb-4">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Member Status</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px;">
+                    <canvas id="memberStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Loan Status</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px;">
+                    <canvas id="loanStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Members per Cooperative</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px;">
+                    <canvas id="coopMemberChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Loan Issuance Trend (Monthly)</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px;">
+                    <canvas id="monthlyLoanChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Colors
+        const colors = {
+            primary: '#0d6efd',
+            success: '#198754',
+            warning: '#ffc107',
+            danger: '#dc3545',
+            info: '#0dcaf0',
+            secondary: '#6c757d',
+            muted: '#adb5bd'
+        };
+
+        // Member Status Chart (Doughnut)
+        new Chart(document.getElementById('memberStatusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: {{ member_status_labels| safe }},
+        datasets: [{
+            data: {{ member_status_data| safe }},
+            backgroundColor: [colors.success, colors.danger],
+            borderWidth: 1
+        }]
+            },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom' }
+        }
+    }
+        });
+
+    // Loan Status Chart (Pie)
+    new Chart(document.getElementById('loanStatusChart'), {
+        type: 'pie',
+        data: {
+            labels: {{ loan_status_labels| safe }},
+        datasets: [{
+            data: {{ loan_status_data| safe }},
+        backgroundColor: [colors.primary, colors.success, colors.danger, colors.warning, colors.info],
+        borderWidth: 1
+                }]
+            },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom' }
+        }
+    }
+        });
+
+    // Members per Cooperative Chart (Bar)
+    new Chart(document.getElementById('coopMemberChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ coop_member_labels| safe }},
+        datasets: [{
+            label: 'No. of Members',
+            data: {{ coop_member_data| safe }},
+        backgroundColor: colors.primary,
+        borderRadius: 4
+                }]
+            },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        },
+        plugins: {
+            legend: { display: false }
+        }
+    }
+        });
+
+    // Monthly Loan Issuance Chart (Line)
+    new Chart(document.getElementById('monthlyLoanChart'), {
+        type: 'line',
+        data: {
+            labels: {{ monthly_loan_labels| safe }},
+        datasets: [{
+            label: 'Loans Issued',
+            data: {{ monthly_loan_data| safe }},
+        borderColor: colors.info,
+        backgroundColor: 'rgba(13, 202, 240, 0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: colors.info
+                }]
+            },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        },
+        plugins: {
+            legend: { display: false }
+        }
+    }
+        });
+    });
+</script>
+
+<div class="row mb-4">
     <div class="col-md-12">
         <div class="card border-0 bg-light">
             <div class="card-body d-flex justify-content-between align-items-center py-2">
-                <span class="text-muted"><i class="bi bi-shield-check"></i> Blacklisted Members: <strong>{{ blacklisted_members }}</strong></span>
-                <a href="/admin/" class="btn btn-outline-secondary btn-sm"><i class="bi bi-gear"></i> Django Admin</a>
+                <span class="text-muted"><i class="fa-solid fa-circle-info"></i> Dashboard Charts provide real-time
+                    system insights.</span>
+                <a href="/admin/" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-gear"></i> Django
+                    Admin</a>
             </div>
         </div>
     </div>
@@ -171,7 +334,8 @@
     <div class="col-md-12">
         <div class="card border-0 bg-light">
             <div class="card-body py-2">
-                <span class="text-muted"><i class="bi bi-building"></i> My Cooperative: <strong>{{ my_cooperative.name }}</strong> ({{ my_cooperative.code }})</span>
+                <span class="text-muted"><i class="bi bi-building"></i> My Cooperative: <strong>{{ my_cooperative.name
+                        }}</strong> ({{ my_cooperative.code }})</span>
             </div>
         </div>
     </div>
