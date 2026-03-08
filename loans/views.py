@@ -136,6 +136,7 @@ class GuarantorListView(StaffOrAdminMixin, LoginRequiredMixin, ListView):
     template_name = 'loans/guarantor_list.html'
     context_object_name = 'guarantors'
     paginate_by = 10
+    ordering = ['id']
 
     def get_queryset(self):
         qs = super().get_queryset()
