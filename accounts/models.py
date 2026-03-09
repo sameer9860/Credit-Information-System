@@ -20,6 +20,7 @@ class User(AbstractUser):
         related_name='users',
         help_text="Null for Super Admin users"
     )
+    is_first_login = models.BooleanField(default=True)
     
     class Meta:
         ordering = ['-date_joined']
