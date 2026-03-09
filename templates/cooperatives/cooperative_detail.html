@@ -88,6 +88,41 @@
         {% if request.user.is_superadmin %}
         <div class="card shadow-sm mt-4">
             <div class="card-header bg-white">
+                <h4 class="mb-0">Cooperative Staff & Admins</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>S.N</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Cooperative</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in cooperative_staff %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ staff.username }}</td>
+                                <td>{{ staff.get_role_display }}</td>
+                                <td>{{ cooperative.name }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No staff members found for this
+                                    cooperative.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white">
                 <h4 class="mb-0">Add Staff for {{ cooperative.name }}</h4>
             </div>
             <div class="card-body">
