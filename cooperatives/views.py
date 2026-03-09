@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.db.models import Q
 from .models import Cooperative
 from accounts.forms import StaffCreationForm
 from accounts.permissions import (
@@ -17,6 +18,33 @@ class CooperativeListView(StaffOrAdminMixin, CooperativeAccessMixin, ListView):
     model = Cooperative
     template_name = 'cooperatives/cooperative_list.html'
     context_object_name = 'cooperatives'
+    paginate_by = 10
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        
+        # Search functionality
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            qs = qs.filter(
+                Q(name__icontains=search_query) |
+                Q(code__icontains=search_query) |
+                Q(address__icontains=search_query) |
+                Q(contact__icontains=search_query)
+            )
+
+        # Status filter
+        status_filter = self.request.GET.get('status', '').strip()
+        if status_filter:
+            qs = qs.filter(status__iexact=status_filter)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('search', '')
+        context['status_filter'] = self.request.GET.get('status', '')
+        return context
 
 
 class CooperativeCreateView(SuperAdminRequiredMixin, CreateView):
