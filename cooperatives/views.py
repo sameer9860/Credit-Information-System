@@ -3,6 +3,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, D
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import Cooperative
+from accounts.forms import StaffCreationForm
 from accounts.permissions import (
     SuperAdminRequiredMixin, 
     CooperativeAccessMixin,
@@ -50,6 +51,33 @@ class CooperativeDetailView(StaffOrAdminMixin, CooperativeAccessMixin, DetailVie
     model = Cooperative
     template_name = 'cooperatives/cooperative_detail.html'
     context_object_name = 'cooperative'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_superadmin():
+            context['staff_form'] = StaffCreationForm(initial={'cooperative': self.object})
+        return context
+
+
+class CreateStaffView(SuperAdminRequiredMixin, CreateView):
+    """View for Super Admin to create a new staff for a cooperative."""
+    form_class = StaffCreationForm
+    template_name = 'cooperatives/cooperative_detail.html'
+
+    def get_success_url(self):
+        return reverse_lazy('cooperatives:detail', kwargs={'pk': self.request.POST.get('cooperative')})
+
+    def form_valid(self, form):
+        user = form.save()
+        messages.success(self.request, f"User '{user.username}' created successfully for {user.cooperative.name}.")
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        # In case of error, redirect back to the detail page with errors
+        coop_id = self.request.POST.get('cooperative')
+        messages.error(self.request, "Error creating staff. Please check the form.")
+        # This is a bit tricky with generic views, but we can redirect back
+        return redirect('cooperatives:detail', pk=coop_id)
 
 
 @superadmin_required
