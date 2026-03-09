@@ -208,18 +208,36 @@
                                 login.</p>
                             <div class="mb-3">
                                 <label for="old_password" class="form-label">Old Password</label>
-                                <input type="password" name="old_password" class="form-control" id="old_password"
-                                    required>
+                                <div class="input-group">
+                                    <input type="password" name="old_password" class="form-control" id="old_password"
+                                        required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button"
+                                        data-target="old_password">
+                                        <i class="fa-solid fa-eye-slash"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="new_password1" class="form-label">New Password</label>
-                                <input type="password" name="new_password1" class="form-control" id="new_password1"
-                                    required>
+                                <div class="input-group">
+                                    <input type="password" name="new_password1" class="form-control" id="new_password1"
+                                        required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button"
+                                        data-target="new_password1">
+                                        <i class="fa-solid fa-eye-slash"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="new_password2" class="form-label">Confirm New Password</label>
-                                <input type="password" name="new_password2" class="form-control" id="new_password2"
-                                    required>
+                                <div class="input-group">
+                                    <input type="password" name="new_password2" class="form-control" id="new_password2"
+                                        required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button"
+                                        data-target="new_password2">
+                                        <i class="fa-solid fa-eye-slash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -250,6 +268,25 @@
             content.classList.toggle("expanded");
 
         }
+
+        document.addEventListener('click', function (e) {
+            const toggleBtn = e.target.closest('.toggle-password');
+            if (toggleBtn) {
+                const targetId = toggleBtn.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = toggleBtn.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
+            }
+        });
 
     </script>
 
