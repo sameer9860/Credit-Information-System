@@ -56,6 +56,8 @@ class CooperativeDetailView(StaffOrAdminMixin, CooperativeAccessMixin, DetailVie
         context = super().get_context_data(**kwargs)
         if self.request.user.is_superadmin():
             context['staff_form'] = StaffCreationForm(initial={'cooperative': self.object})
+            # Add this line to get staff related to this cooperative
+            context['cooperative_staff'] = self.object.users.all().order_by('role', 'username')
         return context
 
 
