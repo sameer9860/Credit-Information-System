@@ -6,6 +6,11 @@ from loans.models import Loan, Guarantor
 from django.db.models import Count
 from django.db.models.functions import ExtractMonth
 from django.utils import timezone
+from django.shortcuts import render, redirect
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.views import View
+from .forms import FirstTimePasswordChangeForm
 import json
 
 
@@ -82,4 +87,29 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 context['recent_members'] = Member.objects.filter(cooperative=coop).order_by('-created_at')[:5]
                 context['my_cooperative'] = coop
 
+
         return context
+
+
+class ChangePasswordView(LoginRequiredMixin, View):
+    """View to handle first-time password change."""
+    def post(self, request):
+        form = FirstTimePasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = request.user
+            user.set_password(form.cleaned_data['new_password1'])
+            user.is_first_login = False
+            user.save()
+            update_session_auth_hash(request, user)  # Keep the user logged in
+            messages.success(request, "Password changed successfully.")
+            return redirect('accounts:dashboard')
+        
+        # If form is invalid, we might need to show errors. 
+        # Since it's a popup, we might want to handle this via messages or redirecting back.
+        for error in form.non_field_errors():
+            messages.error(request, error)
+        for field in form:
+            for error in field.errors:
+                messages.error(request, f"{field.label}: {error}")
+        
+        return redirect('accounts:dashboard')
