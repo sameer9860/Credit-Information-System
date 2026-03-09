@@ -84,6 +84,55 @@
                 </div>
             </div>
         </div>
+
+        {% if request.user.is_superadmin %}
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">Add Staff for {{ cooperative.name }}</h4>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'cooperatives:create_staff' %}" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_username" class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" id="id_username" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_cooperative" class="form-label">Cooperative</label>
+                            <select name="cooperative" class="form-select" id="id_cooperative" required>
+                                <option value="{{ cooperative.pk }}" selected>{{ cooperative.name }}</option>
+                                {% for coop in cooperatives_list %}
+                                <option value="{{ coop.pk }}">{{ coop.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_role" class="form-label">Role</label>
+                            <select name="role" class="form-select" id="id_role" required>
+                                <option value="admin">Admin</option>
+                                <option value="staff" selected>Staff</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_password" class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" id="id_password" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" name="confirm_password" class="form-control" id="id_confirm_password"
+                                required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Staff Member</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
