@@ -153,14 +153,26 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="id_password" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" id="id_password" required>
+                            <div class="input-group">
+                                <input type="password" name="password" class="form-control" id="id_password" required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button"
+                                    data-target="id_password">
+                                    <i class="fa-solid fa-eye-slash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="id_confirm_password" class="form-label">Confirm Password</label>
-                            <input type="password" name="confirm_password" class="form-control" id="id_confirm_password"
-                                required>
+                            <div class="input-group">
+                                <input type="password" name="confirm_password" class="form-control"
+                                    id="id_confirm_password" required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button"
+                                    data-target="id_confirm_password">
+                                    <i class="fa-solid fa-eye-slash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Create Staff Member</button>
