@@ -1,6 +1,7 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Q
 from .models import Member
 from .forms import MemberForm
 from accounts.permissions import StaffOrAdminMixin, AdminOrSuperAdminMixin, CooperativeAccessMixin
@@ -12,6 +13,34 @@ class MemberListView(StaffOrAdminMixin, CooperativeAccessMixin, ListView):
     template_name = 'members/member_list.html'
     context_object_name = 'members'
     paginate_by = 10
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        
+        # Search functionality
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            qs = qs.filter(
+                Q(full_name__icontains=search_query) |
+                Q(citizenship_number__icontains=search_query) |
+                Q(phone_number__icontains=search_query) |
+                Q(cooperative__name__icontains=search_query)
+            )
+
+        # Status filter (Blacklisted/Active)
+        status_filter = self.request.GET.get('status', '').strip().lower()
+        if status_filter == 'blacklisted':
+            qs = qs.filter(blacklist_status=True)
+        elif status_filter == 'active':
+            qs = qs.filter(blacklist_status=False)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('search', '')
+        context['status_filter'] = self.request.GET.get('status', '')
+        return context
 
 
 class MemberDetailView(StaffOrAdminMixin, CooperativeAccessMixin, DetailView):
