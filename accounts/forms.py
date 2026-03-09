@@ -12,8 +12,19 @@ class StaffCreationForm(forms.ModelForm):
         model = User
         fields = ['username', 'cooperative', 'role', 'password']
         widgets = {
-            'role': forms.Select(choices=[('admin', 'Admin'), ('staff', 'Staff')]),
+            'role': forms.Select(),
         }
+
+    def __init__(self, *args, **kwargs):
+        self.request_user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        # Adjust role choices based on who is creating the staff
+        if self.request_user and self.request_user.role == 'admin':
+            self.fields['role'].choices = [('staff', 'Staff')]
+            self.fields['role'].initial = 'staff'
+        else:
+            self.fields['role'].choices = [('admin', 'Admin'), ('staff', 'Staff')]
 
     def clean(self):
         cleaned_data = super().clean()
