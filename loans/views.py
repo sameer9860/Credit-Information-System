@@ -1,4 +1,5 @@
-from django.db import transaction
+from django.db import transaction, models
+from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -22,7 +23,39 @@ class LoanListView(StaffOrAdminMixin, CooperativeAccessMixin, LoginRequiredMixin
         # Filter by cooperative if user is not superadmin
         if not self.request.user.is_superadmin():
             qs = qs.filter(cooperative=self.request.user.cooperative)
+        
+        # Search functionality
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            qs = qs.filter(
+                Q(member__full_name__icontains=search_query) |
+                Q(cooperative__name__icontains=search_query) |
+                Q(guarantors__name__icontains=search_query)
+            ).distinct()
+
+        # Date filtering
+        start_date = self.request.GET.get('start_date')
+        if start_date:
+            qs = qs.filter(loan_date__gte=start_date)
+        
+        due_date = self.request.GET.get('due_date')
+        if due_date:
+            qs = qs.filter(due_date__lte=due_date)
+
+        # Status filter
+        status_filter = self.request.GET.get('status', '')
+        if status_filter:
+            qs = qs.filter(status=status_filter)
+
         return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('search', '')
+        context['status_filter'] = self.request.GET.get('status', '')
+        context['start_date'] = self.request.GET.get('start_date', '')
+        context['due_date'] = self.request.GET.get('due_date', '')
+        return context
 
 # -----------------------
 # Loan Detail
@@ -142,7 +175,29 @@ class GuarantorListView(StaffOrAdminMixin, LoginRequiredMixin, ListView):
         qs = super().get_queryset()
         if not self.request.user.is_superadmin():
             qs = qs.filter(loan__cooperative=self.request.user.cooperative)
+        
+        # Search functionality
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            qs = qs.filter(
+                Q(name__icontains=search_query) |
+                Q(citizenship_number__icontains=search_query) |
+                Q(contact_number__icontains=search_query) |
+                Q(loan__member__full_name__icontains=search_query)
+            )
+
+        # Status filter
+        status_filter = self.request.GET.get('status', '')
+        if status_filter:
+            qs = qs.filter(status=status_filter)
+
         return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('search', '')
+        context['status_filter'] = self.request.GET.get('status', '')
+        return context
 
 # -----------------------
 # Guarantor Create
