@@ -15,13 +15,15 @@
                     placeholder="Search by name, citizenship, phone, cooperative..." value="{{ search_query }}"
                     autocomplete="off">
             </div>
-            <div class="col-12">
-                <select name="status" id="status-select" class="form-select">
-                    <option value="">All Status</option>
-                    <option value="blacklisted" {% if status_filter|lower=='blacklisted' %}selected{% endif %}>
-                        Blacklisted</option>
-                    <option value="active" {% if status_filter|lower=='active' %}selected{% endif %}>Active</option>
-                </select>
+            <div>
+                <div class="col-12">
+                    <select name="status" id="status-select" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="blacklisted" {% if status_filter|lower == 'blacklisted' %}selected{% endif %}>
+                            Blacklisted</option>
+                        <option value="active" {% if status_filter|lower == 'active' %}selected{% endif %}>Active</option>
+                    </select>
+                </div>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Search</button>
