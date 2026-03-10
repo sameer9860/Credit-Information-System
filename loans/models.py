@@ -83,7 +83,7 @@ class Guarantor(models.Model):
     name = models.CharField(max_length=255)
     citizenship_number = models.CharField(max_length=50)
     loan = models.ForeignKey(Loan, on_delete=models.CASCADE, related_name="guarantors")
-    member = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True, related_name="guaranteed_loans", help_text="Optional: If guarantor is also a member")
+    member = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True, related_name="guaranteed_loans")
     contact_number = models.CharField(max_length=15)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Active')
 
