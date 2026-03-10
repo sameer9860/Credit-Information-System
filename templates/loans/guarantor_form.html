@@ -95,9 +95,9 @@
 {% block extra_js %}
 <script>
     $(document).ready(function () {
-        // Initialize Select2 on the member select field
-        $('#id_member').select2({
-            placeholder: 'Search and select a member...',
+        // Initialize Select2 on both member and loan select fields
+        $('#id_member, #id_loan').select2({
+            placeholder: 'Search and select...',
             allowClear: true,
             theme: 'bootstrap-5',
             width: '100%'
