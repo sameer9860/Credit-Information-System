@@ -1,5 +1,6 @@
 from django.db import transaction, models
 from django.db.models import Q
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -7,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Loan, Guarantor
 from .forms import LoanForm, GuarantorForm, GuarantorFormSet, GuarantorUpdateFormSet
 from accounts.permissions import StaffOrAdminMixin, AdminOrSuperAdminMixin, CooperativeAccessMixin
+from members.models import Member
 
 # -----------------------
 # Loan List
@@ -262,5 +264,20 @@ class GuarantorDetailView(StaffOrAdminMixin, LoginRequiredMixin, DetailView):
         if not self.request.user.is_superadmin():
             qs = qs.filter(loan__cooperative=self.request.user.cooperative)
         return qs
-    
-    
+
+
+# -----------------------
+# Member Detail API (for auto-fill)
+# -----------------------
+def member_detail_api(request, member_id):
+    """Returns member details as JSON for auto-filling guarantor fields."""
+    try:
+        member = Member.objects.get(pk=member_id)
+        return JsonResponse({
+            'success': True,
+            'full_name': member.full_name,
+            'citizenship_number': member.citizenship_number,
+            'phone': member.phone,
+        })
+    except Member.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Member not found'}, status=404)
