@@ -76,6 +76,7 @@
 
 <div class="form-container">
     <h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Guarantor</h2>
+    <p class="text-muted"><small>Select a member to auto-fill name, citizenship number, and contact number.</small></p>
 
     <form method="post">
         {% csrf_token %}
@@ -86,4 +87,44 @@
     </form>
 </div>
 
+</form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        // Initialize Select2 on the member select field
+        $('#id_member').select2({
+            placeholder: 'Search and select a member...',
+            allowClear: true,
+            theme: 'bootstrap-5',
+            width: '100%'
+        });
+
+        // Auto-fill guarantor fields when a member is selected
+        $('#id_member').on('change', function () {
+            const memberId = $(this).val();
+
+            if (!memberId) {
+                $('#id_name').val('');
+                $('#id_citizenship_number').val('');
+                $('#id_contact_number').val('');
+                return;
+            }
+
+            fetch(`/loans/api/member/${memberId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#id_name').val(data.full_name);
+                        $('#id_citizenship_number').val(data.citizenship_number);
+                        $('#id_contact_number').val(data.phone);
+                    }
+                })
+                .catch(err => console.error('Error fetching member details:', err));
+        });
+    });
+</script>
 {% endblock %}
