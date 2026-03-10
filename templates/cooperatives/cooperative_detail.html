@@ -85,7 +85,7 @@
             </div>
         </div>
 
-        {% if request.user.is_superadmin %}
+        {% if request.user.is_superadmin or request.user.role == 'admin' %}
         <div class="card shadow-sm mt-4">
             <div class="card-header bg-white">
                 <h4 class="mb-0">Cooperative Staff & Admins</h4>
@@ -147,7 +147,9 @@
                         <div class="col-md-6 mb-3">
                             <label for="id_role" class="form-label">Role</label>
                             <select name="role" class="form-select" id="id_role" required>
-                                <option value="admin">Admin</option>
+                               {% if request.user.is_superadmin %}
+                               <option value="admin">Admin</option>
+                               {% endif %}
                                 <option value="staff" selected>Staff</option>
                             </select>
                         </div>
