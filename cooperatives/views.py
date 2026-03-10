@@ -7,8 +7,9 @@ from .models import Cooperative
 from accounts.forms import StaffCreationForm
 from accounts.permissions import (
     SuperAdminRequiredMixin, 
-    CooperativeAccessMixin,
-    StaffOrAdminMixin,
+    StaffOrAdminMixin, 
+    CooperativeAccessMixin, 
+    AdminOrSuperAdminMixin,
     superadmin_required
 )
 
@@ -82,17 +83,22 @@ class CooperativeDetailView(StaffOrAdminMixin, CooperativeAccessMixin, DetailVie
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.user.is_superadmin():
-            context['staff_form'] = StaffCreationForm(initial={'cooperative': self.object})
+        if self.request.user.is_superadmin() or self.request.user.role == 'admin':
+            context['staff_form'] = StaffCreationForm(user=self.request.user, initial={'cooperative': self.object})
             # Add this line to get staff related to this cooperative
             context['cooperative_staff'] = self.object.users.all().order_by('role', 'username')
         return context
 
 
-class CreateStaffView(SuperAdminRequiredMixin, CreateView):
-    """View for Super Admin to create a new staff for a cooperative."""
+class CreateStaffView(AdminOrSuperAdminMixin, CreateView):
+    """View for Admin/Super Admin to create a new staff for a cooperative."""
     form_class = StaffCreationForm
     template_name = 'cooperatives/cooperative_detail.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_success_url(self):
         return reverse_lazy('cooperatives:detail', kwargs={'pk': self.request.POST.get('cooperative')})
