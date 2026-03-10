@@ -23,7 +23,7 @@ class MemberListView(StaffOrAdminMixin, CooperativeAccessMixin, ListView):
             qs = qs.filter(
                 Q(full_name__icontains=search_query) |
                 Q(citizenship_number__icontains=search_query) |
-                Q(phone_number__icontains=search_query) |
+                Q(phone__icontains=search_query) |
                 Q(cooperative__name__icontains=search_query)
             )
 
