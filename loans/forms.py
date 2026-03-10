@@ -66,7 +66,7 @@ class GuarantorForm(forms.ModelForm):
 GuarantorFormSet = inlineformset_factory(
     Loan, 
     Guarantor, 
-    fields=('name', 'citizenship_number', 'contact_number', 'status'),
+    fields=('member', 'name', 'citizenship_number', 'contact_number', 'status'),
     extra=1, 
     can_delete=True
 )
@@ -74,7 +74,7 @@ GuarantorFormSet = inlineformset_factory(
 GuarantorUpdateFormSet = inlineformset_factory(
     Loan, 
     Guarantor, 
-    fields=('name', 'citizenship_number', 'contact_number', 'status'),
+    fields=('member', 'name', 'citizenship_number', 'contact_number', 'status'),
     extra=0, 
     can_delete=True
 )
