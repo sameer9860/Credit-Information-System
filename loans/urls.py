@@ -5,7 +5,8 @@ from .views import (
     LoanDeleteView,
     GuarantorListView, GuarantorCreateView,
     GuarantorUpdateView, GuarantorDeleteView,
-    GuarantorDetailView
+    GuarantorDetailView,
+    member_detail_api
 )
 
 app_name = 'loans'  # important for namespacing
@@ -24,4 +25,7 @@ urlpatterns = [
     path('guarantors/<int:pk>/', GuarantorDetailView.as_view(), name='guarantor_detail'),
     path('guarantors/<int:pk>/update/', GuarantorUpdateView.as_view(), name='update_guarantor'),
     path('guarantors/<int:pk>/delete/', GuarantorDeleteView.as_view(), name='delete_guarantor'),
+
+    # API
+    path('api/member/<int:member_id>/', member_detail_api, name='member_detail_api'),
 ]
