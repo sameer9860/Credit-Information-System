@@ -8,7 +8,7 @@ class Member(models.Model):
     
     full_name = models.CharField(max_length=255)
     citizenship_number = models.CharField(max_length=50, unique=True)
-    unique_system_id = models.CharField(max_length=20, unique=True, editable=False)
+    unique_system_id = models.CharField(max_length=100, unique=True, editable=False)
     address = models.TextField()
     phone = models.CharField(max_length=20)
     blacklist_status = models.BooleanField(default=False)
@@ -33,10 +33,36 @@ class Member(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.unique_system_id:
-            # Generate a unique system ID: MEM-XXXXXX
-            while True:
-                new_id = f"MEM-{get_random_string(8, allowed_chars='0123456789')}"
-                if not Member.objects.filter(unique_system_id=new_id).exists():
-                    self.unique_system_id = new_id
-                    break
+            from django.utils import timezone
+            
+            current_year = timezone.now().year
+            
+            try:
+                coop_code = self.cooperative.code.upper()
+            except Exception:
+                coop_code = "MEM"
+                
+            prefix = f"{coop_code}-{current_year}-"
+            
+            # Find the latest member with this prefix to determine the next sequence
+            latest_member = Member.objects.filter(
+                unique_system_id__startswith=prefix
+            ).order_by('-unique_system_id').first()
+            
+            if latest_member:
+                try:
+                    last_sequence = int(latest_member.unique_system_id.split('-')[-1])
+                    new_sequence = last_sequence + 1
+                except ValueError:
+                    new_sequence = 1
+            else:
+                new_sequence = 1
+                
+            self.unique_system_id = f"{prefix}{new_sequence:04d}"
+            
+            # Ensure uniqueness
+            while Member.objects.filter(unique_system_id=self.unique_system_id).exists():
+                new_sequence += 1
+                self.unique_system_id = f"{prefix}{new_sequence:04d}"
+                
         super().save(*args, **kwargs)
