@@ -19,10 +19,12 @@ class LoanForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)  # Pop 'user' safely
         super().__init__(*args, **kwargs)
 
-        # Example: limit members to user's cooperative if not superadmin
+        # Limit members and hide cooperative if not superadmin
         if self.user and not self.user.is_superadmin():
             self.fields['member'].queryset = self.fields['member'].queryset.filter(cooperative=self.user.cooperative)
-            self.fields['cooperative'].widget.attrs['readonly'] = True  # optional: prevent editing
+            # Remove cooperative field as it should be auto-assigned
+            if 'cooperative' in self.fields:
+                del self.fields['cooperative']
 
     def clean(self):
         cleaned_data = super().clean()
