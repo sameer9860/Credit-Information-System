@@ -9,17 +9,19 @@
 </div>
 <div class="card shadow-sm mb-4">
     <div class="card-body">
-        <form method="get" class="row row-cols-lg-auto g-3 align-items-center">
+        <form method="get" id="filter-form" class="row row-cols-lg-auto g-3 align-items-center">
             <div class="col-12">
-                <input type="text" name="search" class="form-control"
-                    placeholder="Search by name, citizenship, phone, cooperative..." value="{{ search_query }}">
+                <input type="text" name="search" id="search-input" class="form-control"
+                    placeholder="Search by name, citizenship, phone, cooperative..." value="{{ search_query }}"
+                    autocomplete="off">
             </div>
-            <div>
-                <select name="status" class="form-select">
+            <div class="col-12">
+                <select name="status" id="status-select" class="form-select">
                     <option value="">All Status</option>
-                    <option value="Blacklisted " {% if status_filter == 'Blacklisted' %}selected{% endif %}>Blacklisted</option>
-                    <option value="Active" {% if status_filter == 'Active' %}selected{% endif %}>Active</option>
-                 </select>
+                    <option value="blacklisted" {% if status_filter|lower=='blacklisted' %}selected{% endif %}>
+                        Blacklisted</option>
+                    <option value="active" {% if status_filter|lower=='active' %}selected{% endif %}>Active</option>
+                </select>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Search</button>
@@ -28,6 +30,9 @@
         </form>
     </div>
 </div>
+
+
+
 
 <div class="card shadow">
     <div class="card-body">
@@ -108,4 +113,60 @@
         {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        const form = $('#filter-form');
+        const searchInput = $('#search-input');
+        const selects = form.find('select');
+        let debounceTimer;
+
+        // Restore focus and cursor position from session storage
+        const focusId = sessionStorage.getItem('filterFocusId');
+        const selectionStart = sessionStorage.getItem('filterSelectionStart');
+        const selectionEnd = sessionStorage.getItem('filterSelectionEnd');
+
+        if (focusId) {
+            const el = document.getElementById(focusId);
+            if (el) {
+                el.focus();
+                // If it's the search input, restore the cursor position
+                if (el.id === 'search-input' && selectionStart !== null) {
+                    el.setSelectionRange(selectionStart, selectionEnd);
+                }
+            }
+            // Clear storage after restoration
+            sessionStorage.removeItem('filterFocusId');
+            sessionStorage.removeItem('filterSelectionStart');
+            sessionStorage.removeItem('filterSelectionEnd');
+        }
+
+        // Save focus and cursor position before form submission
+        form.on('submit', function () {
+            const activeEl = document.activeElement;
+            if (activeEl && activeEl.id) {
+                sessionStorage.setItem('filterFocusId', activeEl.id);
+                if (activeEl.id === 'search-input') {
+                    sessionStorage.setItem('filterSelectionStart', activeEl.selectionStart);
+                    sessionStorage.setItem('filterSelectionEnd', activeEl.selectionEnd);
+                }
+            }
+        });
+
+        // Auto-submit on select change
+        selects.on('change', function () {
+            form.submit();
+        });
+
+        // Auto-submit on typing (debounced to 600ms for better typing flow)
+        searchInput.on('input', function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                form.submit();
+            }, 600);
+        });
+    });
+</script>
 {% endblock %}
