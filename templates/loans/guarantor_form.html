@@ -5,21 +5,31 @@
 
 <div class="row justify-content-center">
     <div class="col-md-8">
+
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'loans:guarantor_list' %}">Guarantors</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{% if form.instance.pk %}Edit{% else %}Add{%
-                    endif %} Guarantor</li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'loans:guarantor_list' %}">Guarantors</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    {% if form.instance.pk %}Edit{% else %}Add{% endif %} Guarantor
+                </li>
             </ol>
         </nav>
 
         <div class="card shadow-sm mt-3">
             <div class="card-header bg-white">
-                <h4 class="mb-0"><i class="fa-solid fa-shield-halved me-2"></i>{% if form.instance.pk %}Edit{% else
-                    %}Add{% endif %} Guarantor</h4>
+                <h4 class="mb-0">
+                    <i class="fa-solid fa-shield-halved me-2"></i>
+                    {% if form.instance.pk %}Edit{% else %}Add{% endif %} Guarantor
+                </h4>
             </div>
+
             <div class="card-body p-4">
-                <p class="text-muted small mb-4">Select a member to auto-fill their information.</p>
+                <p class="text-muted small mb-4">
+                    Select a member to auto-fill their information.
+                </p>
+
                 <form method="post" novalidate>
                     {% csrf_token %}
 
@@ -27,6 +37,7 @@
                         <div class="col-md-6 mb-3">
                             {{ form.member|as_crispy_field }}
                         </div>
+
                         <div class="col-md-6 mb-3">
                             {{ form.loan|as_crispy_field }}
                         </div>
@@ -40,6 +51,7 @@
                         <div class="col-md-6 mb-3">
                             {{ form.citizenship_number|as_crispy_field }}
                         </div>
+
                         <div class="col-md-6 mb-3">
                             {{ form.contact_number|as_crispy_field }}
                         </div>
@@ -50,54 +62,66 @@
                     </div>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
+
                         <a href="{% url 'loans:guarantor_list' %}" class="btn btn-outline-secondary px-4 me-md-2">
                             <i class="fa-solid fa-xmark me-2"></i>Cancel
                         </a>
+
                         <button type="submit" class="btn btn-primary px-4">
                             <i class="fa-solid fa-floppy-disk me-2"></i>Save Guarantor
                         </button>
+
                     </div>
+
                 </form>
             </div>
         </div>
+
     </div>
 </div>
 
 {% endblock %}
 
+
 {% block extra_js %}
 <script>
-    $(document).ready(function () {
-        // Initialize Select2 on both member and loan select fields
-        $('#id_member, #id_loan').select2({
-            placeholder: 'Search and select...',
-            allowClear: true,
-            theme: 'bootstrap-5',
-            width: '100%'
-        });
+$(document).ready(function () {
 
-        // Auto-fill guarantor fields when a member is selected
-        $('#id_member').on('change', function () {
-            const memberId = $(this).val();
+    // Initialize Select2
+    $('#id_member, #id_loan').select2({
+        placeholder: 'Search and select...',
+        allowClear: true,
+        theme: 'bootstrap-5',
+        width: '100%'
+    });
 
-            if (!memberId) {
-                $('#id_name').val('');
-                $('#id_citizenship_number').val('');
-                $('#id_contact_number').val('');
-                return;
+    // Auto-fill guarantor fields when member selected
+    $('#id_member').on('change', function () {
+
+        const memberId = $(this).val();
+
+        if (!memberId) {
+            $('#id_name').val('');
+            $('#id_citizenship_number').val('');
+            $('#id_contact_number').val('');
+            return;
+        }
+
+        fetch(`/loans/api/member/${memberId}/`)
+        .then(response => response.json())
+        .then(data => {
+
+            if (data.success) {
+                $('#id_name').val(data.full_name);
+                $('#id_citizenship_number').val(data.citizenship_number);
+                $('#id_contact_number').val(data.phone);
             }
 
-            fetch(`/loans/api/member/${memberId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        $('#id_name').val(data.full_name);
-                        $('#id_citizenship_number').val(data.citizenship_number);
-                        $('#id_contact_number').val(data.phone);
-                    }
-                })
-                .catch(err => console.error('Error fetching member details:', err));
-        });
+        })
+        .catch(err => console.error('Error fetching member details:', err));
+
     });
+
+});
 </script>
 {% endblock %}
