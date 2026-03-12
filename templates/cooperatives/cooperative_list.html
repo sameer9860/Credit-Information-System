@@ -26,7 +26,7 @@
                     autocomplete="off">
             </div>
 
-            <div class="col-12">
+             <div class="col-12">
                 <select name="status" id="status-select" class="form-select">
                     <option value="">All Status</option>
                     <option value="active" {% if status_filter|lower == 'active' %}selected{% endif %}>Active</option>
@@ -49,6 +49,7 @@
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>S.N</th>
                         <th>Code</th>
                         <th>Name</th>
                         <th>Address</th>
@@ -60,6 +61,7 @@
                 <tbody>
                     {% for coop in cooperatives %}
                     <tr>
+                        <td>{{ forloop.counter }}</td>
                         <td><code>{{ coop.code }}</code></td>
                         <td>{{ coop.name }}</td>
                         <td>{{ coop.address }}</td>
@@ -92,7 +94,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center py-4">No cooperatives found.</td>
+                        <td colspan="7" class="text-center py-4">No cooperatives found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
