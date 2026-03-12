@@ -1,114 +1,109 @@
 {% extends "base.html" %}
 {% block content %}
 
-<style>
-    .form-container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        background: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
+{% load crispy_forms_tags %}
 
-    h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #333;
-    }
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'loans:loan_list' %}">Loans</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Update Loan</li>
+            </ol>
+        </nav>
 
-    form {
-        display: flex;
-        flex-direction: column;
-    }
+        <div class="card shadow-sm mt-3">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fa-solid fa-file-invoice-dollar me-2"></i>Update Loan: #{{ object.loan_id }}
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
 
-    form p {
-        margin-bottom: 15px;
-    }
+                    <div class="section-title mb-4">
+                        <h5 class="text-primary border-bottom pb-2">
+                            <i class="fa-solid fa-circle-info me-2"></i>Loan Details
+                        </h5>
+                    </div>
 
-    label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 5px;
-        color: #444;
-    }
+                    {% if not user.is_superadmin %}
+                    <div class="alert alert-info py-2 small mb-4">
+                        <i class="fa-solid fa-building me-2"></i><strong>Cooperative:</strong> {{ user.cooperative.name
+                        }}
+                    </div>
+                    {% endif %}
 
-    input,
-    select,
-    textarea {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-    }
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.member|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.loan_amount|as_crispy_field }}
+                        </div>
+                    </div>
 
-    input:focus,
-    select:focus,
-    textarea:focus {
-        border-color: #007bff;
-        outline: none;
-        box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
-    }
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            {{ form.interest_rate|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.loan_date|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.due_date|as_crispy_field }}
+                        </div>
+                    </div>
 
-    button {
-        padding: 10px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.status|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.remaining_balance|as_crispy_field }}
+                        </div>
+                    </div>
 
-    button:hover {
-        background-color: #0056b3;
-    }
+                    {% if user.is_superadmin %}
+                    <div class="mb-3">
+                        {{ form.cooperative|as_crispy_field }}
+                    </div>
+                    {% endif %}
 
-    .errorlist {
-        color: red;
-        margin-bottom: 10px;
-        list-style: none;
-        padding: 0;
-    }
-</style>
+                    <div class="section-title mt-5 mb-4">
+                        <h5 class="text-primary border-bottom pb-2">
+                            <i class="fa-solid fa-shield-halved me-2"></i>Guarantor Details
+                        </h5>
+                        <p class="text-muted small">Select a member to auto-fill their information.</p>
+                    </div>
 
-<div class="form-container" style="max-width: 800px;">
-    <h2>Update Loan</h2>
+                    {{ guarantor_formset.management_form }}
+                    <div class="row">
+                        {% for g_form in guarantor_formset %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card border-light bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-3 text-muted">Guarantor #{{ forloop.counter }}</h6>
+                                    {{ g_form.id }}
+                                    {{ g_form|crispy }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
 
-    <form method="post">
-        {% csrf_token %}
-
-        <div class="row">
-            <div class="col-md-12">
-                <h4>Loan Details</h4>
-                {% if not user.is_superadmin %}
-                <p><strong>Cooperative:</strong> {{ user.cooperative.name }}</p>
-                {% endif %}
-                {{ form.as_p }}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
+                        <a href="{% url 'loans:loan_list' %}" class="btn btn-outline-secondary px-4 me-md-2">
+                            <i class="fa-solid fa-xmark me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fa-solid fa-floppy-disk me-2"></i>Update Loan & Guarantors
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <hr>
-
-        <div class="row">
-            <div class="col-md-12">
-                <h4>Guarantor Details</h4>
-                <p class="text-muted"><small>Select a member to auto-fill name, citizenship number, and contact
-                        number.</small></p>
-                {{ guarantor_formset.management_form }}
-                {% for g_form in guarantor_formset %}
-                <div class="guarantor-form border p-3 mb-3 bg-white rounded">
-                    {{ g_form.id }}
-                    {{ g_form.as_p }}
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100">💾 Update Loan & Guarantors</button>
-    </form>
+    </div>
 </div>
 
 {% endblock %}
