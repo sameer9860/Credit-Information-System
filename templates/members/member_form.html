@@ -2,25 +2,58 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    {% if object %}Edit Member{% else %}Add Member{% endif %}
+{% if object %}Edit Member{% else %}Add Member{% endif %}
 {% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">{% if object %}Update Member: {{ object.full_name }}{% else %}Add New Member{% endif %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'members:member_list' %}">Members</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% if object %}Edit{% else %}Add{% endif %}
+                    Member</li>
+            </ol>
+        </nav>
+
+        <div class="card shadow-sm mt-3">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">{% if object %}<i class="fa-solid fa-user-pen me-2"></i>Edit Member: {{
+                    object.full_name }}{% else %}<i class="fa-solid fa-user-plus me-2"></i>Add New Member{% endif %}
                 </h4>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form method="post" novalidate>
                     {% csrf_token %}
-                    {{ form|crispy }}
-                    <div class="mt-4 d-flex justify-content-between">
-                        <a href="{% url 'members:member_list' %}" class="btn btn-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-success">
-                            {% if object %}Save Changes{% else %}Add Member{% endif %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.full_name|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.citizenship_number|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.phone|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {% if user.is_superadmin %}
+                            {{ form.cooperative|as_crispy_field }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.address|as_crispy_field }}
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
+                        <a href="{% url 'members:member_list' %}" class="btn btn-outline-secondary px-4 me-md-2">
+                            <i class="fa-solid fa-xmark me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fa-solid fa-floppy-disk me-2"></i>{% if object %}Update{% else %}Save{% endif %}
+                            Member
                         </button>
                     </div>
                 </form>
