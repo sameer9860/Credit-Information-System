@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import inlineformset_factory
+from django.utils import timezone
 from .models import Loan, Guarantor
 from .services import validate_loan_eligibility
 
@@ -14,9 +15,20 @@ class LoanForm(forms.ModelForm):
             "loan_date",
             "due_date",
         ]
+        widgets = {
+            'loan_date': forms.DateInput(attrs={'type': 'date'}),
+            'due_date': forms.DateInput(attrs={'type': 'date'}),
+        }
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)  # Pop 'user' safely
+        
+        # Set initial loan_date to today if creating a new loan
+        if 'initial' not in kwargs:
+            kwargs['initial'] = {}
+        if 'loan_date' not in kwargs['initial']:
+            kwargs['initial']['loan_date'] = timezone.now().date()
+            
         super().__init__(*args, **kwargs)
 
         # Limit members and hide cooperative if not superadmin
