@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    {% if object %}Edit{% else %}Create{% endif %} Cooperative - Credit System
+{% if object %}Edit{% else %}Create{% endif %} Cooperative - Credit System
 {% endblock %}
 
 {% block content %}
@@ -27,46 +27,39 @@
                 </h3>
             </div>
 
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form method="post" novalidate>
                     {% csrf_token %}
 
-                    <div class="mb-3">
-                        <label for="id_name" class="form-label">Cooperative Name</label>
-                        {{ form.name|as_crispy_field }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="id_code" class="form-label">Code (Unique)</label>
-                        {{ form.code|as_crispy_field }}
-                        <div class="form-text">
-                            Short unique code identifying the cooperative.
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.name|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.code|as_crispy_field }}
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="id_address" class="form-label">Address</label>
                         {{ form.address|as_crispy_field }}
                     </div>
 
-                    <div class="mb-3">
-                        <label for="id_contact" class="form-label">Contact Details</label>
-                        {{ form.contact|as_crispy_field }}
-                        <div class="form-text">
-                            Phone number or email address.
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            {{ form.contact|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.status|as_crispy_field }}
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        {{ form.status|as_crispy_field }}
-                    </div>
-
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <a href="{% url 'cooperatives:list' %}" class="btn btn-light me-md-2">
-                            Cancel
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
+                        <a href="{% url 'cooperatives:list' %}" class="btn btn-outline-secondary px-4 me-md-2">
+                            <i class="fa-solid fa-xmark me-2"></i>Cancel
                         </a>
                         <button type="submit" class="btn btn-primary px-4">
-                            Save Cooperative
+                            <i class="fa-solid fa-floppy-disk me-2"></i>{% if object %}Update{% else %}Save{% endif %}
+                            Cooperative
                         </button>
                     </div>
 
