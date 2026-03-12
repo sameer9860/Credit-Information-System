@@ -8,22 +8,19 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'members:member_list' %}">Members</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{% if object %}Edit{% else %}Add{% endif %}
-                    Member</li>
-            </ol>
-        </nav>
 
-        <div class="card shadow-sm mt-3">
+        <div class="card shadow-sm">
             <div class="card-header bg-white">
-                <h4 class="mb-0">{% if object %}<i class="fa-solid fa-user-pen me-2"></i>Edit Member: {{object.full_name }}{% else %}<i class="fa-solid fa-user-plus me-2"></i>Add New Member{% endif %}
+                <h4 class="mb-0">
+                    <i class="fa-solid fa-{% if object %}user-pen{% else %}user-plus{% endif %} me-2"></i>
+                    {% if object %}Edit Member: {{ object.full_name }}{% else %}Add New Member{% endif %}
                 </h4>
             </div>
+
             <div class="card-body p-4">
                 <form method="post" novalidate>
                     {% csrf_token %}
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             {{ form.full_name|as_crispy_field }}
@@ -32,18 +29,37 @@
                             {{ form.citizenship_number|as_crispy_field }}
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             {{ form.phone|as_crispy_field }}
                         </div>
                         <div class="col-md-6 mb-3">
-                            {% if user.is_superadmin %}
+                            {% if form.cooperative %}
                             {{ form.cooperative|as_crispy_field }}
                             {% endif %}
                         </div>
                     </div>
+
                     <div class="mb-3">
                         {{ form.address|as_crispy_field }}
+                    </div>
+
+                    <div class="mb-3 p-3 bg-light rounded border">
+                        <div class="form-check form-switch">
+                            {{ form.blacklist_status }}
+                            <label class="form-check-label fw-semibold" for="{{ form.blacklist_status.id_for_label }}">
+                                <i class="fa-solid fa-ban me-1 text-danger"></i> Blacklisted Member
+                            </label>
+                            {% if form.blacklist_status.help_text %}
+                            <div class="form-text">{{ form.blacklist_status.help_text }}</div>
+                            {% endif %}
+                            {% if form.blacklist_status.errors %}
+                            {% for error in form.blacklist_status.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
                     </div>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
@@ -51,13 +67,15 @@
                             <i class="fa-solid fa-xmark me-2"></i>Cancel
                         </a>
                         <button type="submit" class="btn btn-primary px-4">
-                            <i class="fa-solid fa-floppy-disk me-2"></i>{% if object %}Update{% else %}Save{% endif %}
-                            Member
+                            <i class="fa-solid fa-floppy-disk me-2"></i>
+                            {% if object %}Update Member{% else %}Save Member{% endif %}
                         </button>
                     </div>
+
                 </form>
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}
