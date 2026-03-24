@@ -313,14 +313,20 @@
             </div>
 
             <div class="dropdown">
-                <a class="profile-toggle dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                <a class="profile-toggle" href="#" role="button" data-bs-toggle="dropdown"
                     aria-expanded="false" style="list-style:none;">
                     <div class="profile-avatar">
                         {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
                         {% if not user.first_name %}{{ user.username|first|upper }}{% endif %}
                     </div>
                     <div>
-                        <div class="profile-name">{{ user.get_full_name|default:user.username }}</div>
+                        <div class="profile-name">
+                            {% if user.first_name %}
+                                {{ user.first_name }} {{ user.last_name }}
+                            {% else %}
+                                {{ user.username }}
+                            {% endif %}
+                        </div>
                         <div class="profile-role">
                             {% if user.role == 'superadmin' %}<span class="role-badge superadmin">Super Admin</span>
                             {% elif user.role == 'admin' %}<span class="role-badge admin">Admin</span>
@@ -339,7 +345,13 @@
                                     {% if not user.first_name %}{{ user.username|first|upper }}{% endif %}
                                 </div>
                                 <div>
-                                    <div class="pd-name">{{ user.get_full_name|default:user.username }}</div>
+                                    <div class="pd-name">
+                                        {% if user.first_name %}
+                                            {{ user.first_name }} {{ user.last_name }}
+                                        {% else %}
+                                            {{ user.username }}
+                                        {% endif %}
+                                    </div>
                                     {% if user.role == 'superadmin' %}<span class="role-badge superadmin">Super Admin</span>
                                     {% elif user.role == 'admin' %}<span class="role-badge admin">Admin</span>
                                     {% else %}<span class="role-badge staff">Staff</span>{% endif %}
