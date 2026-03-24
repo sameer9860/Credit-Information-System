@@ -95,6 +95,16 @@ class ChangePasswordView(LoginRequiredMixin, View):
     """View to handle first-time password change."""
     def post(self, request):
         form = FirstTimePasswordChangeForm(request.user, request.POST)
+        next_url = request.GET.get('next', 'accounts:dashboard')
+        
+        if next_url != 'accounts:dashboard' and not next_url.startswith('/'):
+            # Basic validation to ensure it's a valid redirect or a url name
+            try:
+                from django.urls import reverse
+                next_url = reverse(next_url)
+            except:
+                next_url = 'accounts:dashboard'
+                
         if form.is_valid():
             user = request.user
             user.set_password(form.cleaned_data['new_password1'])
@@ -102,7 +112,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
             user.save()
             update_session_auth_hash(request, user)  # Keep the user logged in
             messages.success(request, "Password changed successfully.")
-            return redirect('accounts:dashboard')
+            return redirect(next_url)
         
         # If form is invalid, we might need to show errors. 
         # Since it's a popup, we might want to handle this via messages or redirecting back.
@@ -112,4 +122,8 @@ class ChangePasswordView(LoginRequiredMixin, View):
             for error in field.errors:
                 messages.error(request, f"{field.label}: {error}")
         
-        return redirect('accounts:dashboard')
+        return redirect(next_url)
+
+class ProfileView(LoginRequiredMixin, TemplateView):
+    """View to display user profile."""
+    template_name = 'accounts/profile.html'
