@@ -101,6 +101,130 @@
         .page-content {
             padding: 25px;
         }
+
+        /* Profile Dropdown */
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .profile-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #1f2937;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .profile-toggle:hover {
+            background: #f3f4f6;
+        }
+
+        .profile-toggle .profile-name {
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1;
+            color: #111827;
+        }
+
+        .profile-toggle .profile-role {
+            font-size: 11px;
+            color: #6b7280;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        .role-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .role-badge.superadmin {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .role-badge.admin {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .role-badge.staff {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .profile-dropdown-menu {
+            min-width: 240px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            border-radius: 12px;
+            padding: 8px;
+            margin-top: 8px !important;
+        }
+
+        .profile-dropdown-header {
+            padding: 12px 14px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 4px;
+        }
+
+        .profile-dropdown-header .pd-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: #111827;
+        }
+
+        .profile-dropdown-header .pd-email {
+            font-size: 12px;
+            color: #6b7280;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .profile-dropdown-menu .dropdown-item {
+            border-radius: 6px;
+            font-size: 14px;
+            padding: 9px 12px;
+            color: #374151;
+            transition: background 0.15s;
+        }
+
+        .profile-dropdown-menu .dropdown-item:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .profile-dropdown-menu .dropdown-divider {
+            margin: 6px 0;
+        }
+
+        .logout-item {
+            color: #ef4444 !important;
+        }
+
+        .logout-item:hover {
+            background: #fef2f2 !important;
+            color: #dc2626 !important;
+        }
     </style>
 
 </head>
@@ -188,24 +312,59 @@
                 <i class="fa-solid fa-bars"></i>
             </div>
 
-            <div>
-                <div class="dropdown">
-                    <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button"
-                        data-bs-toggle="dropdown">
-                        <i class="fa-solid fa-user"></i>
-                        {{ user.username }}
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li>
-                            <form action="{% url 'accounts:logout' %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="dropdown-item">
-                                    <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
+            <div class="dropdown">
+                <a class="profile-toggle dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false" style="list-style:none;">
+                    <div class="profile-avatar">
+                        {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                        {% if not user.first_name %}{{ user.username|first|upper }}{% endif %}
+                    </div>
+                    <div>
+                        <div class="profile-name">{{ user.get_full_name|default:user.username }}</div>
+                        <div class="profile-role">
+                            {% if user.role == 'superadmin' %}<span class="role-badge superadmin">Super Admin</span>
+                            {% elif user.role == 'admin' %}<span class="role-badge admin">Admin</span>
+                            {% else %}<span class="role-badge staff">Staff</span>{% endif %}
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down small ms-1 text-muted"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end profile-dropdown-menu">
+                    <!-- Header -->
+                    <li>
+                        <div class="profile-dropdown-header">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <div class="profile-avatar" style="width:32px;height:32px;font-size:12px;">
+                                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                                    {% if not user.first_name %}{{ user.username|first|upper }}{% endif %}
+                                </div>
+                                <div>
+                                    <div class="pd-name">{{ user.get_full_name|default:user.username }}</div>
+                                    {% if user.role == 'superadmin' %}<span class="role-badge superadmin">Super Admin</span>
+                                    {% elif user.role == 'admin' %}<span class="role-badge admin">Admin</span>
+                                    {% else %}<span class="role-badge staff">Staff</span>{% endif %}
+                                </div>
+                            </div>
+                            <div class="pd-email">{{ user.email|default:"No email set" }}</div>
+                        </div>
+                    </li>
+                    <!-- Profile link -->
+                    <li>
+                        <a class="dropdown-item" href="{% url 'accounts:profile' %}">
+                            <i class="fa-solid fa-user-circle me-2 text-primary"></i> My Profile
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <!-- Logout -->
+                    <li>
+                        <form action="{% url 'accounts:logout' %}" method="post" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item logout-item w-100 text-start">
+                                <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
             </div>
         </div>
         {% endif %}
