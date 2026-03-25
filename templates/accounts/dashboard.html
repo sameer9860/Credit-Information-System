@@ -14,65 +14,71 @@
 <!-- Super Admin Dashboard -->
 <div class="row mb-4">
 
-    <div class="col-md-4 mb-3">
-        <div class="card bg-primary text-white shadow">
-            <div class="card-body text-center">
-                <h6 class="card-title text-uppercase mb-2">Total Cooperatives</h6>
-                <h2 class="display-5 fw-bold mb-1">{{ total_cooperatives }}</h2>
+    <div class="col-6 col-md-4 mb-3">
+        <div class="card bg-primary text-white shadow h-100">
+            <div class="card-body text-center p-2 p-md-3">
+                <h6 class="card-title text-uppercase mb-2" style="font-size: 0.75rem;">Total Cooperatives</h6>
+                <h2 class="display-6 fw-bold mb-1">{{ total_cooperatives }}</h2>
                 <p class="mb-0 small opacity-75">{{ active_cooperatives }} Active</p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4 mb-3">
-        <div class="card bg-success text-white shadow">
-            <div class="card-body text-center">
-                <h6 class="card-title text-uppercase mb-2">Total Members</h6>
-                <h2 class="display-5 fw-bold mb-1">{{ total_members }}</h2>
+
+    <div class="col-6 col-md-4 mb-3">
+        <div class="card bg-success text-white shadow h-100">
+            <div class="card-body text-center p-2 p-md-3">
+                <h6 class="card-title text-uppercase mb-2" style="font-size: 0.75rem;">Total Members</h6>
+                <h2 class="display-6 fw-bold mb-1">{{ total_members }}</h2>
                 <p class="mb-0 small opacity-75">System-wide</p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4 mb-3">
-        <div class="card bg-warning text-dark shadow">
-            <div class="card-body text-center">
-                <h6 class="card-title text-uppercase mb-2">Total Loans</h6>
-                <h2 class="display-5 fw-bold mb-1">{{ total_loans }}</h2>
+
+    <div class="col-6 col-md-4 mb-3">
+        <div class="card bg-warning text-dark shadow h-100">
+            <div class="card-body text-center p-2 p-md-3">
+                <h6 class="card-title text-uppercase mb-2" style="font-size: 0.75rem;">Total Loans</h6>
+                <h2 class="display-6 fw-bold mb-1">{{ total_loans }}</h2>
                 <p class="mb-0 small opacity-75">Across all coops</p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4 mb-3">
-        <div class="card bg-danger text-white shadow">
-            <div class="card-body text-center">
-                <h6 class="card-title text-uppercase mb-2">System Overdue</h6>
-                <h2 class="display-5 fw-bold mb-1">{{ system_overdue_loans }}</h2>
+
+    <div class="col-6 col-md-4 mb-3">
+        <div class="card bg-danger text-white shadow h-100">
+            <div class="card-body text-center p-2 p-md-3">
+                <h6 class="card-title text-uppercase mb-2" style="font-size: 0.75rem;">System Overdue</h6>
+                <h2 class="display-6 fw-bold mb-1">{{ system_overdue_loans }}</h2>
                 <p class="mb-0 small opacity-75">Action required</p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4 mb-3">
-        <div class="card bg-info text-white shadow">
-            <div class="card-body text-center">
-                <h6 class="card-title text-uppercase mb-2">Blacklisted Members</h6>
-                <h2 class="display-5 fw-bold mb-1">{{ blacklisted_members }}</h2>
+
+    <div class="col-6 col-md-4 mb-3">
+        <div class="card bg-info text-white shadow h-100">
+            <div class="card-body text-center p-2 p-md-3">
+                <h6 class="card-title text-uppercase mb-2" style="font-size: 0.75rem;">Blacklisted</h6>
+                <h2 class="display-6 fw-bold mb-1">{{ blacklisted_members }}</h2>
                 <p class="mb-0 small opacity-75">Action required</p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4 mb-3">
-        <div class="card bg-secondary text-white shadow">
-            <div class="card-body text-center">
-                <h6 class="card-title text-uppercase mb-2">Guarantors</h6>
-                <h2 class="display-5 fw-bold mb-1">{{ total_guarantors }}</h2>
+
+    <div class="col-6 col-md-4 mb-3">
+        <div class="card bg-secondary text-white shadow h-100">
+            <div class="card-body text-center p-2 p-md-3">
+                <h6 class="card-title text-uppercase mb-2" style="font-size: 0.75rem;">Guarantors</h6>
+                <h2 class="display-6 fw-bold mb-1">{{ total_guarantors }}</h2>
                 <p class="mb-0 small opacity-75">System-wide</p>
             </div>
         </div>
     </div>
+
 
 </div>
 
@@ -292,42 +298,46 @@
 {% else %}
 <!-- Cooperative Admin/Staff Dashboard -->
 <div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card bg-primary text-white shadow">
-            <div class="card-body text-center">
-                <h6 class="card-title text-uppercase mb-2">Members</h6>
-                <h2 class="display-5 fw-bold mb-1">{{ total_members }}</h2>
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card bg-primary text-white shadow h-100">
+            <div class="card-body text-center p-2 p-md-3">
+                <h6 class="card-title text-uppercase mb-2" style="font-size: 0.75rem;">Members</h6>
+                <h2 class="display-6 fw-bold mb-1">{{ total_members }}</h2>
                 <p class="mb-0 small opacity-75">Total Enrolled</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card bg-success text-white shadow">
-            <div class="card-body text-center">
-                <h6 class="card-title text-uppercase mb-2">Active Loans</h6>
-                <h2 class="display-5 fw-bold mb-1">{{ active_loans }}</h2>
+
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card bg-success text-white shadow h-100">
+            <div class="card-body text-center p-2 p-md-3">
+                <h6 class="card-title text-uppercase mb-2" style="font-size: 0.75rem;">Active Loans</h6>
+                <h2 class="display-6 fw-bold mb-1">{{ active_loans }}</h2>
                 <p class="mb-0 small opacity-75">Currently running</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card bg-danger text-white shadow">
-            <div class="card-body text-center">
-                <h6 class="card-title text-uppercase mb-2">Overdue Loans</h6>
-                <h2 class="display-5 fw-bold mb-1">{{ overdue_loans }}</h2>
+
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card bg-danger text-white shadow h-100">
+            <div class="card-body text-center p-2 p-md-3">
+                <h6 class="card-title text-uppercase mb-2" style="font-size: 0.75rem;">Overdue Loans</h6>
+                <h2 class="display-6 fw-bold mb-1">{{ overdue_loans }}</h2>
                 <p class="mb-0 small opacity-75">Action needed</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card bg-info text-white shadow">
-            <div class="card-body text-center">
-                <h6 class="card-title text-uppercase mb-2">Blacklisted</h6>
-                <h2 class="display-5 fw-bold mb-1">{{ blacklisted_members }}</h2>
+
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card bg-info text-white shadow h-100">
+            <div class="card-body text-center p-2 p-md-3">
+                <h6 class="card-title text-uppercase mb-2" style="font-size: 0.75rem;">Blacklisted</h6>
+                <h2 class="display-6 fw-bold mb-1">{{ blacklisted_members }}</h2>
                 <p class="mb-0 small opacity-75">In this coop</p>
             </div>
         </div>
     </div>
+
 </div>
 
 <div class="row mb-4">
