@@ -7,8 +7,16 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="card shadow-sm border-0 rounded-4 mt-4">
-                <div class="card-body p-5 text-center">
-                    <div class="profile-avatar mb-4" style="width: 100px; height: 100px; font-size: 36px; margin: 0 auto;">
+                    <style>
+                        @media (max-width: 575.98px) {
+                            .profile-card-body {
+                                padding: 2rem 1.5rem !important;
+                            }
+                        }
+                    </style>
+                    <div class="card-body p-5 text-center profile-card-body">
+                        <div class="profile-avatar mb-4" style="width: 100px; height: 100px; font-size: 36px; margin: 0 auto;">
+
                         {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
                         {% if not user.first_name %}{{ user.username|first|upper }}{% endif %}
                     </div>
